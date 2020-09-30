@@ -1,0 +1,18 @@
+Apache2 logger file is found in /var/logs/apache2
+
+Two types of logs:
+1. Access logs => Keeps track of all the access requests made to the web server and the servers response to those requests
+
+2. Error logs => Keeps a track of the errors encountered during any request response cycle and in general keeps track of the state of the server
+
+Common format of a log file:
+1. %>s HTTP status code for a request
+2. %U URL of the specified resource
+3. %a IP address of the client
+4. %T Time required to make the request
+5. %t Timestamp either in RFC 1123/1036/ANSI C time format
+
+Decide on a specified format that is read from the config file of the server.
+Essentially keep two levels of logging => One for the access and the other for the errors like apache2
+
+[ Ability to define custom logging format via the config file ]

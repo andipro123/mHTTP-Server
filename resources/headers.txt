@@ -1,0 +1,14 @@
+Backus Naur Normal Form will be followed to descirbe all headers.
+
+HTTP-VERSION = "HTTP" "/" 1*DIGIT "." 1*DIGIT
+
+The HTTP protocol does not place any a priori limit on the length of a URI. Servers MUST be able to handle the
+URI of any resource they serve, and SHOULD be able to handle URIs of unbounded length if they provide GET-
+based forms that could generate such URIs. A server SHOULD return 414 (Request-URI Too Long) status if a URI
+is longer than the server can handle (see section 10.4.15).
+
+http_URL = "http:" "//" host [ ":" port ] [ abs_path [ "?" query ]]
+
+DATE TIME is to be taken in all three of RFC 1123, 1036 and ANSI C format
+
+content-coding = gzip | deflate | compress | identity

@@ -1,0 +1,4 @@
+Config file to be read by the server at startup. Decide on a fix format to parse for the server and editable by the user. Typically follow Apache2's config format.
+Parameters to the config files need to be decided accordingly
+
+
