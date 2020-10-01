@@ -1,0 +1,2 @@
+Most functionalities must be class based to make code reusable. Can follow and refer existing python library.
+Link: https://docs.python.org/3/library/http.server.html
