@@ -19,12 +19,8 @@ def parse_GET_Request(headers):
     # TODO
     # Implement Conditional Get
     # Implement Range Header
-<<<<<<< HEAD
-    # MIME Encoding response
-=======
     # MIME Encoding response 
     params = {}
->>>>>>> 4643ebb965cee9b537ae83ad9db830c989e719fe
     for i in headers[1:]:
         try:
             headerField = i[:i.index(':')]
@@ -40,14 +36,6 @@ def parse_GET_Request(headers):
     try:
         if (path == "/"):
             path = 'index.html'
-<<<<<<< HEAD
-        f = open(path, "r")
-        print("OK")
-        return "200"  #Proper data encoding and sending as a HTTP response
-    except FileNotFoundError:
-        print("NOT OK")
-        return "404"  #Change to proper HTTP response
-=======
         else:
             path = documentRoot + path
         global resource
@@ -64,7 +52,6 @@ def parse_GET_Request(headers):
     except FileNotFoundError:
         res = generateResponse(data,404)
         return res #Change to proper HTTP response
->>>>>>> 4643ebb965cee9b537ae83ad9db830c989e719fe
 
 
 def parse_POST_Request(headers):
@@ -75,21 +62,59 @@ def parse_POST_Request(headers):
     # Extending a database through an append operation.
 
     # For the purpose of the project, POST methods will write the incoming data into a logs file
+
+    params = {} 
+    body = []
     for i in headers[1:]:
+
         try:
             headerField = i[:i.index(':')]
             params[headerField] = i[i.index(':') + 2:len(i) - 1]
         except:
-            pass
+            body.append(i)
 
     path = headers[0].split(' ')[1]
     path = documentRoot + path
     
-    try:
-        if (path == "/"):
-            path = 'index.html'
+    if (path == "/"):
+        path = 'index.html'            
         
-        f = open('./logs/post_log.txt')
+    # Check if file at path is write-able else respond with FORBIDDEN response
+    if os.path.exists(path):
+        if os.access(path, os.W_OK):
+            f1 = open(path, 'w')
+            response_code = 200
+        else:
+            response_code = 403
+    else:
+        f1 = open(path, 'w')
+        response_code = 201
+
+    if response_code = 403:
+        res = generateResponse(403)
+        return res        
+
+    f2 = open('./logs/post_log.txt')
+
+    # Handle application/x-www-form-urlencoded type of data
+    content_type = params['Content-Type']
+    if "application/x-www-form-urlencoded" in content_type:
+        # example string name1=value1&name2=value2
+        form_data = {}
+
+        for line in body:
+            line = line.split('&')
+            for param in line:
+                param = param.split('=')
+                form_data[param[0]] = param[1]
+
+        f2.write(form_data)
+
+    res = generateResponse(response_code)
+    return res
+
+
+
 
 
 
@@ -110,16 +135,9 @@ def process(data):
         headers = [i for i in data.split('\n')]
         tokens = headers[0].split(' ')
         method = tokens[0]
-<<<<<<< HEAD
-        print(method)
-
-        if (method == 'GET'):
-            parse_GET_Request(headers)
-=======
         
         if(method == 'GET'):
             return parse_GET_Request(headers)
->>>>>>> 4643ebb965cee9b537ae83ad9db830c989e719fe
         elif (method == 'POST'):
             parse_POST_Request(headers)
         # elif (method == 'PUT'):
@@ -147,13 +165,6 @@ if __name__ == "__main__":
         clientsocket, clientaddr = s.accept()
         # threading.Thread()
         try:
-<<<<<<< HEAD
-            data = clientsocket.recv(1024).decode('utf-8')
-            print(data)
-            process(data)
-            if ('\r\n\r\n' in data):
-                break
-=======
             while 1:
                 data = clientsocket.recv(5000).decode('utf-8')
                 # print(data)
@@ -170,14 +181,10 @@ if __name__ == "__main__":
          +"Content-Type: text/html\n"
          +"\n" # Important!
          +"<html><body>Hello World</body></html>\n");
->>>>>>> 4643ebb965cee9b537ae83ad9db830c989e719fe
         except e:
             print(e)
             print("err")
         finally:
             clientsocket.close()
-<<<<<<< HEAD
-=======
             f.close()
 
->>>>>>> 4643ebb965cee9b537ae83ad9db830c989e719fe
