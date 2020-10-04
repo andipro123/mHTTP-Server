@@ -43,12 +43,14 @@ status = {
 505 : "HTTP Version not supported"
 }
 
-def generateResponse(data,code,ctype="text/html;charset=UTF-8", encoding = "gzip"):
+def generateResponse(length,code,resource="",ctype="text/html;charset=UTF-8", encoding = "gzip"):
     if(code not in status.keys()):
         return
     date = datetime.datetime.now(tz=pytz.utc)
     time = " {}:{}:{} GMT".format(date.strftime("%H"),date.strftime("%M"),date.strftime("%S"))
     date = date.strftime("%a") + ', ' + str(date.strftime("%d")) + " " + date.strftime("%b") + " " + str(date.year) + time 
-    res = "HTTP/1.1 {} {}\r\nContent-Type: {}\r\nContent-Length: {}\r\nServer: mHTTP-Aplha1\r\nDate: {}\r\nContent-Encoding: {}\r\nConnection: close".format(code,status[code],ctype,data,date,encoding)
-    # print(res)
-    return res 
+    
+    statusLine = "HTTP/1.1 {} {}\r\n".format(code,status[code])
+    headers = "Content-Type: {}\r\nDate: {}\r\nContent-Length: {}\r\n\r\n".format(ctype,date,length,encoding)
+    body = resource
+    return statusLine + headers + body
