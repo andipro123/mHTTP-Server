@@ -31,7 +31,7 @@ def parse_GET_Request(headers):
     # Return 406 on not getting file with desired accept
     matchAccept(params['Accept'])
     path = headers[0].split(' ')[1]
-    data = 0
+    length = 0
     try:
         if(path == "/"):
             path = 'index.html'
@@ -41,16 +41,16 @@ def parse_GET_Request(headers):
         global f
         f = open(path,"r")
         resource = f.read()
+        lastModified = os.path.getmtime(path)
         try:
-            data = len(resource)
+            length = len(resource)
         except :
             pass
-        # print("OK")
-        res = generateResponse(data,200,resource)
-        return res #Proper data encoding and sending as a HTTP response
+        res = generateResponse(length,200,resource,lastModified)
+        return res 
     except FileNotFoundError:
-        res = generateResponse(data,404)
-        return res #Change to proper HTTP response
+        res = generateResponse(length,404)
+        return res 
 
 
 def parse_POST_Request(headers):
