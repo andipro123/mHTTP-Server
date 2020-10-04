@@ -1,15 +1,24 @@
 import socket,sys
 import threading
 import os
+from response import generateResponse 
 
 #Ideally get this from the config file
-documentRoot = '/home/anup08/Desktop/CNProj'
+documentRoot = '/home/anup08/Desktop/CNProj/mhttp-server/src'
+
+def matchAccept(headers):
+    k = headers.split(',')
+    # for i in k:
+        # print(i)
+
+
 
 def parse_GET_Request(headers):
     # TODO
     # Implement Conditional Get
     # Implement Range Header
     # MIME Encoding response 
+    params = {}
     for i in headers[1:]:
         try:
             headerField = i[:i.index(':')] 
@@ -19,18 +28,20 @@ def parse_GET_Request(headers):
 
     # print(params)
     # Return 406 on not getting file with desired accept
-
+    matchAccept(params['Accept'])
     path = headers[0].split(' ')[1]
-    path = documentRoot + path
     try:
         if(path == "/"):
             path = 'index.html'
+        else:
+            path = documentRoot + path
         f = open(path,"r")
-        print("OK")
-        return "200" #Proper data encoding and sending as a HTTP response
+        # print("OK")
+        res = generateResponse(200)
+        return res #Proper data encoding and sending as a HTTP response
     except FileNotFoundError:
-        print("NOT OK")
-        return "404" #Change to proper HTTP response
+        res = generateResponse(404)
+        return res #Change to proper HTTP response
 
 
 def parse_POST_Request(headers):
@@ -47,10 +58,9 @@ def process(data):
         headers = [i for i in data.split('\n')]
         tokens = headers[0].split(' ')
         method = tokens[0]
-        print(method)
         
         if(method == 'GET'):
-            parse_GET_Request(headers)
+            return parse_GET_Request(headers)
         elif (method == 'POST'):
             parse_POST_Request(headers)
         # elif (method == 'PUT'):
@@ -59,7 +69,7 @@ def process(data):
         #     parse_HEAD_Request(headers)
         # elif (method == 'DELETE'):
         #     parse_DELETE_Request(headers)
-
+        return
     except:
         print("Return 400 Bad request")
         return "400"
@@ -81,13 +91,16 @@ if __name__ == "__main__":
         clientsocket, clientaddr = s.accept()
         # threading.Thread()
         try:
-            data = clientsocket.recv(1024).decode('utf-8')
-            print(data)
-            process(data)
-            if('\r\n\r\n' in data):
-                break
-        except e :
-            print(e)
+            while 1:
+                data = clientsocket.recv(1024).decode('utf-8')
+                res = process(data)
+                print(res)
+                if('\r\n\r\n' in data):
+                    break
+            res = res.encode('utf-8')
+            clientsocket.sendall(res)
+        except:
+            print("err")
         finally:
             clientsocket.close()
 
