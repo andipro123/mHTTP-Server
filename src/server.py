@@ -1,20 +1,21 @@
-import socket,sys
+import socket, sys
 import threading
 import os
 
 #Ideally get this from the config file
 documentRoot = '/home/anup08/Desktop/CNProj'
 
+
 def parse_GET_Request(headers):
     # TODO
     # Implement Conditional Get
     # Implement Range Header
-    # MIME Encoding response 
+    # MIME Encoding response
     for i in headers[1:]:
         try:
-            headerField = i[:i.index(':')] 
-            params[headerField] = i[i.index(':') + 2 : len(i) - 1]
-        except :
+            headerField = i[:i.index(':')]
+            params[headerField] = i[i.index(':') + 2:len(i) - 1]
+        except:
             pass
 
     # print(params)
@@ -23,24 +24,53 @@ def parse_GET_Request(headers):
     path = headers[0].split(' ')[1]
     path = documentRoot + path
     try:
-        if(path == "/"):
+        if (path == "/"):
             path = 'index.html'
-        f = open(path,"r")
+        f = open(path, "r")
         print("OK")
-        return "200" #Proper data encoding and sending as a HTTP response
+        return "200"  #Proper data encoding and sending as a HTTP response
     except FileNotFoundError:
         print("NOT OK")
-        return "404" #Change to proper HTTP response
+        return "404"  #Change to proper HTTP response
 
 
 def parse_POST_Request(headers):
-    pass
+    # TODO
+    # Annotation of existing resources
+    # Posting message to an existing bulleting, news board etc
+    # Providing a block of data, such as the result of submitting a form, to a data-handling process
+    # Extending a database through an append operation.
+
+    # For the purpose of the project, POST methods will write the incoming data into a logs file
+    for i in headers[1:]:
+        try:
+            headerField = i[:i.index(':')]
+            params[headerField] = i[i.index(':') + 2:len(i) - 1]
+        except:
+            pass
+
+    path = headers[0].split(' ')[1]
+    path = documentRoot + path
+    
+    try:
+        if (path == "/"):
+            path = 'index.html'
+        
+        f = open('./logs/post_log.txt')
+
+
+
 def parse_PUT_Request(headers):
     pass
+
+
 def parse_HEAD_Request(headers):
     pass
+
+
 def parse_DELETE_Request(headers):
     pass
+
 
 def process(data):
     try:
@@ -48,8 +78,8 @@ def process(data):
         tokens = headers[0].split(' ')
         method = tokens[0]
         print(method)
-        
-        if(method == 'GET'):
+
+        if (method == 'GET'):
             parse_GET_Request(headers)
         elif (method == 'POST'):
             parse_POST_Request(headers)
@@ -65,18 +95,14 @@ def process(data):
         return "400"
 
 
-
-
-
-
 if __name__ == "__main__":
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(('',int(sys.argv[1])))
+    s.bind(('', int(sys.argv[1])))
     s.listen(90)
 
     print("Listening on port {}".format(sys.argv[1]))
     # TODO
-    # Implement with multithreading 
+    # Implement with multithreading
     while 1:
         clientsocket, clientaddr = s.accept()
         # threading.Thread()
@@ -84,10 +110,9 @@ if __name__ == "__main__":
             data = clientsocket.recv(1024).decode('utf-8')
             print(data)
             process(data)
-            if('\r\n\r\n' in data):
+            if ('\r\n\r\n' in data):
                 break
-        except e :
+        except e:
             print(e)
         finally:
             clientsocket.close()
-
