@@ -5,7 +5,8 @@ from response import generateResponse
 
 #Ideally get this from the config file
 documentRoot = '/home/anup08/Desktop/CNProj/mhttp-server/src'
-
+resource = None
+f = None
 def matchAccept(headers):
     k = headers.split(',')
     # for i in k:
@@ -30,17 +31,25 @@ def parse_GET_Request(headers):
     # Return 406 on not getting file with desired accept
     matchAccept(params['Accept'])
     path = headers[0].split(' ')[1]
+    data = 0
     try:
         if(path == "/"):
             path = 'index.html'
         else:
             path = documentRoot + path
+        global resource
+        global f
         f = open(path,"r")
+        resource = f.read()
+        try:
+            data = len(resource)
+        except :
+            pass
         # print("OK")
-        res = generateResponse(200)
+        res = generateResponse(data,200)
         return res #Proper data encoding and sending as a HTTP response
     except FileNotFoundError:
-        res = generateResponse(404)
+        res = generateResponse(data,404)
         return res #Change to proper HTTP response
 
 
@@ -70,9 +79,10 @@ def process(data):
         # elif (method == 'DELETE'):
         #     parse_DELETE_Request(headers)
         return
-    except:
+    except e:
+        print(e)
         print("Return 400 Bad request")
-        return "400"
+        return generateResponse(0,400)
 
 
 
@@ -92,15 +102,25 @@ if __name__ == "__main__":
         # threading.Thread()
         try:
             while 1:
-                data = clientsocket.recv(1024).decode('utf-8')
+                data = clientsocket.recv(5000).decode('utf-8')
+                # print(data)
                 res = process(data)
-                print(res)
                 if('\r\n\r\n' in data):
                     break
+            print(res)
             res = res.encode('utf-8')
-            clientsocket.sendall(res)
-        except:
+            data = resource
+            # clientsocket.send(res)
+            # clientsocket.send(b'\n')
+            # clientsocket.send(data.encode('utf-8'))
+            clientsocket.send(b"HTTP/1.1 200 OK\n"
+         +"Content-Type: text/html\n"
+         +"\n" # Important!
+         +"<html><body>Hello World</body></html>\n");
+        except e:
+            print(e)
             print("err")
         finally:
             clientsocket.close()
+            f.close()
 
