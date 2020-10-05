@@ -2,6 +2,7 @@ import socket, sys
 import threading
 import os
 from response import generateResponse 
+from utils.mediaTypes import mediaTypes
 
 #Ideally get this from the config file
 documentRoot = '/home/anup08/Desktop/CNProj/mhttp-server/src'
@@ -9,9 +10,10 @@ resource = None
 f = None
 def matchAccept(headers):
     k = headers.split(',')
-    # for i in k:
-        # print(i)
-
+    par = []
+    for i in k:
+        par.append(i)
+    return par
 
 
 
@@ -30,7 +32,7 @@ def parse_GET_Request(headers):
 
     # print(params)
     # Return 406 on not getting file with desired accept
-    matchAccept(params['Accept'])
+    par = matchAccept(params['Accept'])
     path = headers[0].split(' ')[1]
     length = 0
     try:
@@ -40,14 +42,15 @@ def parse_GET_Request(headers):
             path = documentRoot + path
         global resource
         global f
-        f = open(path,"r")
+        f = open(path,"rb")
         resource = f.read()
         lastModified = os.path.getmtime(path)
         try:
             length = len(resource)
         except :
             pass
-        res = generateResponse(length,200,resource,lastModified)
+        
+        res = generateResponse(length,200,lastModified,par[0])
         return res 
     except FileNotFoundError:
         res = generateResponse(length,404)
@@ -90,7 +93,7 @@ def parse_POST_Request(headers):
         f1 = open(path, 'w')
         response_code = 201
 
-    if response_code = 403:
+    if response_code == 403:
         res = generateResponse(403)
         return res        
 
@@ -172,9 +175,9 @@ if __name__ == "__main__":
                 if('\r\n\r\n' in data):
                     break
             
-            print(res)
+            # print(res)
             clientsocket.send(res.encode('utf-8'))
-            
+            clientsocket.send(resource)
         except e:
             print(e)
             print("err")
