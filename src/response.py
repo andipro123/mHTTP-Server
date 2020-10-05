@@ -1,54 +1,24 @@
 import pytz
 import datetime
+from utils.statusCodes import codes
+from utils.responseHeaders import responseHeaders
+from utils.entityHeaders import entityHeaders
 
-status = {
-101 : "Switching Protocols",
-200 : "OK",
-201 : "Created",
-202 : "Accepted",
-203 : "Non-Authoritative Information",
-204 : "No Content",
-205 : "Reset Content",
-206 : "Partial Content",
-300 : "Multiple Choices",
-301 : "Moved Permanently",
-302 : "Found",
-303 : "See Other",
-304 : "Not Modified",
-305 : "Use Proxy",
-307 : "Temporary Redirect",
-400 : "Bad Request",
-401 : "Unauthorized",
-402 : "Payment Required",
-403 : "Forbidden",
-404 : "Not Found",
-405 : "Method Not Allowed",
-406 : "Not Acceptable",
-407 : "Proxy Authentication Required",
-408 : "Request Time-out",
-409 : "Conflict",
-410 : "Gone",
-411 : "Length Required",
-412 : "Precondition Failed",
-413 : "Request Entity Too Large",
-414 : "Request-URI Too Large",
-415 : "Unsupported Media Type",
-416 : "Requested range not satisfiable",
-417 : "Expectation Failed",
-500 : "Internal Server Error",
-501 : "Not Implemented",
-502 : "Bad Gateway",
-503 : "Service Unavailable",
-504 : "Gateway Time-out",
-505 : "HTTP Version not supported"
-}
+#Response = Status Line + Response Headers + Entity Headers + Entity Body
 
-def generateResponse(data,code,ctype="text/html;charset=UTF-8", encoding = "gzip"):
-    if(code not in status.keys()):
+def generateResponse(length,code,resource="",lastModified=None,ctype="text/html;charset=UTF-8", encoding = "gzip"):
+    if(code not in codes.keys()):
         return
     date = datetime.datetime.now(tz=pytz.utc)
     time = " {}:{}:{} GMT".format(date.strftime("%H"),date.strftime("%M"),date.strftime("%S"))
     date = date.strftime("%a") + ', ' + str(date.strftime("%d")) + " " + date.strftime("%b") + " " + str(date.year) + time 
-    res = "HTTP/1.1 {} {}\r\nContent-Type: {}\r\nContent-Length: {}\r\nServer: mHTTP-Aplha1\r\nDate: {}\r\nContent-Encoding: {}\r\nConnection: close".format(code,status[code],ctype,data,date,encoding)
-    # print(res)
-    return res 
+
+    # lastModified = datetime.datetime(int(lastModified))
+    print(lastModified)
+
+    statusLine = "HTTP/1.1 {} {}\r\n".format(code,codes[code])
+    responseHeaders = "Server: mHTTP-Alpha0\r\n"
+    
+    entityheaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: {}\r\n\r\n".format(ctype,date,length,encoding)
+    body = resource
+    return statusLine + responseHeaders +  entityheaders + body

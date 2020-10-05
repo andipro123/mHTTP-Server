@@ -32,7 +32,7 @@ def parse_GET_Request(headers):
     # Return 406 on not getting file with desired accept
     matchAccept(params['Accept'])
     path = headers[0].split(' ')[1]
-    data = 0
+    length = 0
     try:
         if (path == "/"):
             path = 'index.html'
@@ -42,16 +42,16 @@ def parse_GET_Request(headers):
         global f
         f = open(path,"r")
         resource = f.read()
+        lastModified = os.path.getmtime(path)
         try:
-            data = len(resource)
+            length = len(resource)
         except :
             pass
-        # print("OK")
-        res = generateResponse(data,200)
-        return res #Proper data encoding and sending as a HTTP response
+        res = generateResponse(length,200,resource,lastModified)
+        return res 
     except FileNotFoundError:
-        res = generateResponse(data,404)
-        return res #Change to proper HTTP response
+        res = generateResponse(length,404)
+        return res 
 
 
 def parse_POST_Request(headers):
@@ -171,16 +171,10 @@ if __name__ == "__main__":
                 res = process(data)
                 if('\r\n\r\n' in data):
                     break
+            
             print(res)
-            res = res.encode('utf-8')
-            data = resource
-            # clientsocket.send(res)
-            # clientsocket.send(b'\n')
-            # clientsocket.send(data.encode('utf-8'))
-            clientsocket.send(b"HTTP/1.1 200 OK\n"
-         +"Content-Type: text/html\n"
-         +"\n" # Important!
-         +"<html><body>Hello World</body></html>\n");
+            clientsocket.send(res.encode('utf-8'))
+            
         except e:
             print(e)
             print("err")
