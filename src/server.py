@@ -1,11 +1,13 @@
 import socket, sys
 import threading
 import os
+import pathlib
 from response import generateResponse
 from utils.mediaTypes import mediaTypes
 
 #Ideally get this from the config file
-documentRoot = '/home/anup08/Desktop/CNProj/mhttp-server/src'
+documentRoot = str(pathlib.Path().absolute())
+print(documentRoot)
 resource = None
 f = None
 
@@ -51,7 +53,7 @@ def parse_GET_Request(headers):
         except:
             pass
 
-        res = generateResponse(length, 200, lastModified, par[0])
+        res = generateResponse(length, 200, resource, lastModified, par[0])
         return res
     except FileNotFoundError:
         res = generateResponse(length, 404)
@@ -66,6 +68,8 @@ def parse_POST_Request(headers):
     # Extending a database through an append operation.
 
     # For the purpose of the project, POST methods will write the incoming data into a logs file
+    global resource
+    global f
 
     params = {}
     body = []
@@ -75,38 +79,40 @@ def parse_POST_Request(headers):
             headerField = i[:i.index(':')]
             params[headerField] = i[i.index(':') + 2:len(i) - 1]
         except:
-            body.append(i)
+            if i != '\r' and i != '\n':
+                body.append(i)
 
     path = headers[0].split(' ')[1]
-    path = documentRoot + path
 
     if (path == "/"):
         path = 'index.html'
+    else:
+        path = documentRoot + path
 
     # Check if file at path is write-able else respond with FORBIDDEN response
     if os.path.exists(path):
         if os.access(path, os.W_OK):
-            f1 = open(path, 'w+')
+            f = open(path, 'rb')
             response_code = 200
         else:
             response_code = 403
     else:
-        f1 = open(path, 'w+')
+        f = open(path, 'rb')
         response_code = 201
 
     if response_code == 403:
         res = generateResponse(403)
         return res
 
+    resource = f.read()
+
     f2 = open('./logs/post_log.txt', 'w+')
-    global resource
-    resource = f1.read()
     # Handle application/x-www-form-urlencoded type of data
     content_type = params['Content-Type']
     if "application/x-www-form-urlencoded" in content_type:
         # example string name1=value1&name2=value2
         form_data = {}
-
+        print(body)
         for line in body:
             line = line.split('&')
             for param in line:
@@ -140,14 +146,13 @@ def process(data):
         if (method == 'GET'):
             return parse_GET_Request(headers)
         elif (method == 'POST'):
-            parse_POST_Request(headers)
+            return parse_POST_Request(headers)
         # elif (method == 'PUT'):
         #     parse_PUT_Request(headers)
         # elif (method == 'HEAD'):
         #     parse_HEAD_Request(headers)
         # elif (method == 'DELETE'):
         #     parse_DELETE_Request(headers)
-        return
     except e:
         print(e)
         print("Return 400 Bad request")
@@ -181,4 +186,4 @@ if __name__ == "__main__":
             print("err")
         finally:
             clientsocket.close()
-            f.close()
+            # f.close()
