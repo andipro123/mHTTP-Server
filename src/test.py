@@ -47,8 +47,6 @@ def parse_POST_Request(headers):
         except:
             body.append(i)
 
-    # print(params)
-    # print(body)
     path = headers[0].split(' ')[1]
     path = documentRoot + path
 
@@ -58,12 +56,12 @@ def parse_POST_Request(headers):
     # Check if file at path is write-able else respond with FORBIDDEN response
     if os.path.exists(path):
         if os.access(path, os.W_OK):
-            f1 = open(path, 'w')
+            f1 = open(path, 'w+')
             response_code = 200
         else:
             response_code = 403
     else:
-        f1 = open(path, 'w')
+        f1 = open(path, 'w+')
         response_code = 201
 
     if response_code == 403:
@@ -71,24 +69,23 @@ def parse_POST_Request(headers):
         return res
 
     f2 = open('./logs/post_log.txt', 'w')
-
+    global resource
+    resource = f1.read()
     # Handle application/x-www-form-urlencoded type of data
     content_type = params['Content-Type']
-    print(content_type)
-    form_data = {}
     if "application/x-www-form-urlencoded" in content_type:
-        print('Hi')
         # example string name1=value1&name2=value2
+        form_data = {}
 
         for line in body:
             line = line.split('&')
             for param in line:
                 param = param.split('=')
                 form_data[param[0]] = param[1]
-        print(str(form_data))
+
         f2.write(str(form_data))
 
-    res = generateResponse(form_data, response_code)
+    res = generateResponse(len(resource), response_code, resource, None)
     return res
 
 
