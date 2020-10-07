@@ -5,6 +5,7 @@ import os
 import pathlib
 from response import generateResponse
 from utils.mediaTypes import mediaTypes
+from logger import Logger
 
 # Ideally get this from the config file
 documentRoot = str(pathlib.Path().absolute())
@@ -12,6 +13,7 @@ documentRoot = str(pathlib.Path().absolute())
 resource = None
 f = None
 method = ""
+logger = None
 
 
 def matchAccept(headers):
@@ -38,6 +40,7 @@ def parse_GET_Request(headers, method=""):
             pass
 
     # Return 406 on not getting file with desired accept
+    global logger
     par = matchAccept(params['Accept'])
     path = headers[0].split(' ')[1]
     length = 0
@@ -61,9 +64,11 @@ def parse_GET_Request(headers, method=""):
             print(res)
         else:
             res = generateResponse(length, 200, resource, lastModified, par[0])
+        logger.generate(headers[0], res)
         return res
     except FileNotFoundError:
         res = generateResponse(length, 404)
+        logger.generate(headers[0], res)
         return res
 
 
@@ -147,7 +152,7 @@ def parse_HEAD_Request(headers):
 def parse_DELETE_Request(headers):
     global resource
     global f
-
+    global logger
     # TODO
     # The DELETE method requests that the origin server delete the resource identified by the Request-URI.
     # The client cannot be guaranteed that the operation has been carried out,
@@ -155,7 +160,6 @@ def parse_DELETE_Request(headers):
     # that the action has been completed successfully.
     # However, the server SHOULD NOT indicate success unless, at the
     # time the response is given, it intends to delete the resource or move it to an inaccessible location.
-
     params = {}
     body = []
     for i in headers[1:]:
@@ -174,13 +178,20 @@ def parse_DELETE_Request(headers):
         if os.access(path, os.W_OK):
             os.remove(path)
             # No content response and the request was successful
-            return generateResponse(0, 204)
+            res = generateResponse(0, 204)
+            logger.generate(headers[0], res)
+            return res
         else:
             # Forbidden because delete permission not granted
-            return generateResponse(0, 403)
+            res = generateResponse(0, 403)
+            logger.generate(headers[0], res)
+            return res
+
     else:
         # File not found error
-        return generateResponse(0, 404)
+        res = generateResponse(0, 404)
+        logger.generate(headers[0], res)
+        return res
 
 
 def process(data):
@@ -193,12 +204,12 @@ def process(data):
             return parse_GET_Request(headers)
         elif (method == 'POST'):
             return parse_POST_Request(headers)
-        # elif (method == 'PUT'):
-        #     parse_PUT_Request(headers)
+        elif (method == 'PUT'):
+            return parse_PUT_Request(headers)
         elif (method == 'HEAD'):
             return parse_HEAD_Request(headers)
-        # elif (method == 'DELETE'):
-        #     parse_DELETE_Request(headers)
+        elif (method == 'DELETE'):
+            return parse_DELETE_Request(headers)
     except:
         error = sys.exc_info()[0]
         print(error)
@@ -213,6 +224,7 @@ if __name__ == "__main__":
     print("Listening on port {}".format(sys.argv[1]))
     # TODO
     # Implement with multithreading
+    logger = Logger()
     while 1:
         clientsocket, clientaddr = s.accept()
         # threading.Thread()
