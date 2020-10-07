@@ -4,7 +4,7 @@ from utils.statusCodes import codes
 from utils.responseHeaders import responseHeaders
 from utils.entityHeaders import entityHeaders
 
-#Response = Status Line + Response Headers + Entity Headers + Entity Body
+# Response = Status Line + Response Headers + Entity Headers + Entity Body
 
 
 def generateResponse(length,
@@ -12,6 +12,7 @@ def generateResponse(length,
                      resource=None,
                      lastModified=None,
                      ctype="text/html;charset=UTF-8",
+                     method="",
                      encoding="gzip"):
     if (code not in codes.keys()):
         return
@@ -29,7 +30,7 @@ def generateResponse(length,
     statusLine = "HTTP/1.1 {} {}\r\n".format(code, codes[code])
     responseHeaders = "Server: mHTTP-Alpha0\r\n"
 
-    entityheaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: {}\r\n\r\n".format(
+    entityHeaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: {}\r\n\r\n".format(
         ctype, date, length, encoding)
-    body = resource
-    return statusLine + responseHeaders + entityheaders
+
+    return statusLine + responseHeaders + entityHeaders

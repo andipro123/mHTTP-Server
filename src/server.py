@@ -1,15 +1,17 @@
-import socket, sys
+import socket
+import sys
 import threading
 import os
 import pathlib
 from response import generateResponse
 from utils.mediaTypes import mediaTypes
 
-#Ideally get this from the config file
+# Ideally get this from the config file
 documentRoot = str(pathlib.Path().absolute())
 print(documentRoot)
 resource = None
 f = None
+method = ""
 
 
 def matchAccept(headers):
@@ -20,7 +22,7 @@ def matchAccept(headers):
     return par
 
 
-def parse_GET_Request(headers):
+def parse_GET_Request(headers, method=""):
     # TODO
     # Implement Conditional Get
     # Implement Range Header
@@ -52,8 +54,13 @@ def parse_GET_Request(headers):
             length = len(resource)
         except:
             pass
+        if(method == "HEAD"):
+            res = generateResponse(length, 200, resource,
+                                   lastModified, par[0], "HEAD")
+            print(res)
+        else:
+            res = generateResponse(length, 200, resource, lastModified, par[0])
 
-        res = generateResponse(length, 200, resource, lastModified, par[0])
         return res
     except FileNotFoundError:
         res = generateResponse(length, 404)
@@ -130,7 +137,10 @@ def parse_PUT_Request(headers):
 
 
 def parse_HEAD_Request(headers):
-    pass
+    # Returns the response of GET without the message body
+    # TODO
+    # Add more headers to the repsonse in the reponse.py file
+    return parse_GET_Request(headers, "HEAD")
 
 
 def parse_DELETE_Request(headers):
@@ -174,18 +184,18 @@ def parse_DELETE_Request(headers):
 
 def process(data):
     try:
+        global method
         headers = [i for i in data.split('\n')]
         tokens = headers[0].split(' ')
         method = tokens[0]
-
         if (method == 'GET'):
             return parse_GET_Request(headers)
         elif (method == 'POST'):
             return parse_POST_Request(headers)
         # elif (method == 'PUT'):
         #     parse_PUT_Request(headers)
-        # elif (method == 'HEAD'):
-        #     parse_HEAD_Request(headers)
+        elif (method == 'HEAD'):
+            return parse_HEAD_Request(headers)
         # elif (method == 'DELETE'):
         #     parse_DELETE_Request(headers)
     except e:
@@ -215,7 +225,8 @@ if __name__ == "__main__":
 
             # print(res)
             clientsocket.send(res.encode('utf-8'))
-            clientsocket.send(resource)
+            if(method == "GET"):
+                clientsocket.send(resource)
         except e:
             print(e)
             print("err")
