@@ -58,9 +58,9 @@ def parse_GET_Request(headers, method=""):
             length = len(resource)
         except:
             pass
-        if(method == "HEAD"):
-            res = generateResponse(length, 200, resource,
-                                   lastModified, par[0], "HEAD")
+        if (method == "HEAD"):
+            res = generateResponse(length, 200, resource, lastModified, par[0],
+                                   "HEAD")
             print(res)
         else:
             res = generateResponse(length, 200, resource, lastModified, par[0])
@@ -216,6 +216,33 @@ def process(data):
         return generateResponse(0, 400)
 
 
+def accept_client(s):
+
+    global resource
+    # print("Started a new thread")
+    while True:
+        client_socket, client_addr = s.accept()
+
+        try:
+            while True:
+                data = client_socket.recv(5000).decode('utf-8')
+                res = process(data)
+                if ('\r\n\r\n' in data):
+                    break
+
+            client_socket.send(res.encode('utf-8'))
+            if (method == "GET"):
+                client_socket.send(resource)
+
+        except:
+            error = sys.exc_info()[0]
+            print(error)
+        finally:
+            client_socket.close()
+
+    return
+
+
 if __name__ == "__main__":
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind(('', int(sys.argv[1])))
@@ -225,22 +252,28 @@ if __name__ == "__main__":
     # TODO
     # Implement with multithreading
     logger = Logger()
-    while 1:
-        clientsocket, clientaddr = s.accept()
-        # threading.Thread()
-        try:
-            while 1:
-                data = clientsocket.recv(5000).decode('utf-8')
-                res = process(data)
-                if ('\r\n\r\n' in data):
-                    break
+    # while 1:
+    #     clientsocket, clientaddr = s.accept()
+    #     # threading.Thread()
+    #     try:
+    #         while 1:
+    #             data = clientsocket.recv(5000).decode('utf-8')
+    #             res = process(data)
+    #             if ('\r\n\r\n' in data):
+    #                 break
 
-            clientsocket.send(res.encode('utf-8'))
-            if(method == "GET"):
-                clientsocket.send(resource)
-        except:
-            error = sys.exc_info()[0]
-            print(error)
-        finally:
-            clientsocket.close()
-            # f.close()
+    #         clientsocket.send(res.encode('utf-8'))
+    #         if (method == "GET"):
+    #             clientsocket.send(resource)
+    #     except:
+    #         error = sys.exc_info()[0]
+    #         print(error)
+    #     finally:
+    #         clientsocket.close()
+    #         # f.close()
+
+    try:
+        server_thread = threading.Thread(target=accept_client, args=(s, ))
+        server_thread.start()
+    except:
+        print("Unable to start thread")
