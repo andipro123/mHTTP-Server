@@ -8,7 +8,7 @@ from utils.mediaTypes import mediaTypes
 
 # Ideally get this from the config file
 documentRoot = str(pathlib.Path().absolute())
-print(documentRoot)
+# print(documentRoot)
 resource = None
 f = None
 method = ""
@@ -27,6 +27,8 @@ def parse_GET_Request(headers, method=""):
     # Implement Conditional Get
     # Implement Range Header
     # MIME Encoding response
+    # Cache parameters
+
     params = {}
     for i in headers[1:]:
         try:
@@ -35,7 +37,6 @@ def parse_GET_Request(headers, method=""):
         except:
             pass
 
-    # print(params)
     # Return 406 on not getting file with desired accept
     par = matchAccept(params['Accept'])
     path = headers[0].split(' ')[1]
@@ -60,7 +61,6 @@ def parse_GET_Request(headers, method=""):
             print(res)
         else:
             res = generateResponse(length, 200, resource, lastModified, par[0])
-
         return res
     except FileNotFoundError:
         res = generateResponse(length, 404)
@@ -107,8 +107,8 @@ def parse_POST_Request(headers):
         f = open(path, 'rb')
         response_code = 201
 
-    if response_code == 403:
-        res = generateResponse(403)
+    if (response_code == 403):
+        res = generateResponse(0, 403)
         return res
 
     resource = f.read()
@@ -140,6 +140,7 @@ def parse_HEAD_Request(headers):
     # Returns the response of GET without the message body
     # TODO
     # Add more headers to the repsonse in the reponse.py file
+    # Handle Caching with GET
     return parse_GET_Request(headers, "HEAD")
 
 
@@ -198,9 +199,9 @@ def process(data):
             return parse_HEAD_Request(headers)
         # elif (method == 'DELETE'):
         #     parse_DELETE_Request(headers)
-    except e:
-        print(e)
-        print("Return 400 Bad request")
+    except:
+        error = sys.exc_info()[0]
+        print(error)
         return generateResponse(0, 400)
 
 
@@ -218,18 +219,16 @@ if __name__ == "__main__":
         try:
             while 1:
                 data = clientsocket.recv(5000).decode('utf-8')
-                # print(data)
                 res = process(data)
                 if ('\r\n\r\n' in data):
                     break
 
-            # print(res)
             clientsocket.send(res.encode('utf-8'))
             if(method == "GET"):
                 clientsocket.send(resource)
-        except e:
-            print(e)
-            print("err")
+        except:
+            error = sys.exc_info()[0]
+            print(error)
         finally:
             clientsocket.close()
             # f.close()
