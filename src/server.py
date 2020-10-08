@@ -30,7 +30,6 @@ def parse_GET_Request(headers, method=""):
     # Implement Range Header
     # MIME Encoding response
     # Cache parameters
-
     params = {}
     for i in headers[1:]:
         try:
@@ -216,29 +215,47 @@ def process(data):
         return generateResponse(0, 400)
 
 
+def getConnection(data):
+    headers = data.split('\n')
+    for i in headers[1:]:
+        try:
+            headerField = i[:i.index(':')]
+            if(headerField == "Connection"):
+                return i[i.index(':') + 2:len(i) - 1]
+        except:
+            pass
+
+
 def accept_client(s):
 
     global resource
+    client_socket = ()
     # print("Started a new thread")
     while True:
-        client_socket, client_addr = s.accept()
-
+        if(client_socket == ()):
+            client_socket, client_addr = s.accept()
+        port = list(client_addr)[1]
+        print(port)
         try:
             while True:
                 data = client_socket.recv(5000).decode('utf-8')
                 res = process(data)
                 if ('\r\n\r\n' in data):
                     break
-
+            print(data)
+            connection = getConnection(data)
             client_socket.send(res.encode('utf-8'))
             if (method == "GET"):
                 client_socket.send(resource)
-
+            if(connection == "close"):
+                print("closed")
+                client_socket.close()
+                client_socket = ()
         except:
             error = sys.exc_info()[0]
             print(error)
         finally:
-            client_socket.close()
+            print("Served")
 
     return
 

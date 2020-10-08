@@ -30,7 +30,7 @@ def generateResponse(length,
     statusLine = "HTTP/1.1 {} {}\r\n".format(code, codes[code])
     responseHeaders = "Server: mHTTP-Alpha0\r\n"
 
-    entityHeaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: {}\r\n\r\n".format(
+    entityHeaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: {}\r\nConnection: close\r\n\r\n".format(
         ctype, date, length, encoding)
 
     return statusLine + responseHeaders + entityHeaders
