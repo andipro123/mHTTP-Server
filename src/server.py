@@ -1,3 +1,4 @@
+from time import sleep
 import socket
 import sys
 import threading
@@ -6,6 +7,7 @@ import pathlib
 from response import generateResponse
 from utils.mediaTypes import mediaTypes
 from logger import Logger
+import signal
 
 # Ideally get this from the config file
 documentRoot = str(pathlib.Path().absolute())
@@ -30,7 +32,6 @@ def parse_GET_Request(headers, method=""):
     # Implement Range Header
     # MIME Encoding response
     # Cache parameters
-
     params = {}
     for i in headers[1:]:
         try:
@@ -38,7 +39,8 @@ def parse_GET_Request(headers, method=""):
             params[headerField] = i[i.index(':') + 2:len(i) - 1]
         except:
             pass
-
+    if('Cookie' in params.keys()):
+        print(params['Cookie'])
     # Return 406 on not getting file with desired accept
     global logger
     par = matchAccept(params['Accept'])
@@ -68,7 +70,7 @@ def parse_GET_Request(headers, method=""):
         return res
     except FileNotFoundError:
         res = generateResponse(length, 404)
-        logger.generate(headers[0], res)
+        # logger.generate(headers[0], res)
         return res
 
 
@@ -216,64 +218,111 @@ def process(data):
         return generateResponse(0, 400)
 
 
-def accept_client(s):
-
-    global resource
-    # print("Started a new thread")
-    while True:
-        client_socket, client_addr = s.accept()
-
+def getConnection(data):
+    headers = data.split('\n')
+    for i in headers[1:]:
         try:
-            while True:
-                data = client_socket.recv(5000).decode('utf-8')
-                res = process(data)
-                if ('\r\n\r\n' in data):
-                    break
-
-            client_socket.send(res.encode('utf-8'))
-            if (method == "GET"):
-                client_socket.send(resource)
-
+            headerField = i[:i.index(':')]
+            if(headerField == "Connection"):
+                return i[i.index(':') + 2:len(i) - 1]
         except:
-            error = sys.exc_info()[0]
-            print(error)
-        finally:
-            client_socket.close()
+            pass
 
+
+# def accept_client(s):
+#     global resource
+#     client_socket = ()
+#     while True:
+#         if(client_socket == ()):
+#             client_socket, client_addr = s.accept()
+#             client_socket.settimeout(1)
+#         port = list(client_addr)[1]
+#         try:
+#             while True:
+#                 try:
+#                     data = client_socket.recv(5000).decode('utf-8')
+#                     print(data.split('\n')[0])
+#                     if(len(data) == 0):
+#                         client_socket = ()
+#                         break
+#                 except socket.error:
+#                     print("Didnt get")
+#                     client_socket = ()
+#                     break
+#                 if ('\r\n\r\n' in data):
+#                     break
+#             if(client_socket == ()):
+#                 continue
+#             res = process(data)
+#             client_socket.send(res.encode('utf-8'))
+#             if (method == "GET"):
+#                 client_socket.send(resource)
+#             connection = getConnection(data)
+#             if(connection == "close"):
+#                 print("Closed")
+#                 client_socket = ()
+
+#         except:
+#             error = sys.exc_info()[0]
+#             print(error)
+#             break
+#         finally:
+#             print("Served from port", port)
+
+#     client_socket.close()
+#     return
+
+# Runs a thread that accepts connections on the same socket and closes the TCP connection when socket times out
+def accept_client(clientsocket, client_addr):
+    global resource
+    print('Started the Thread')
+    clientsocket.settimeout(10)
+    port = list(client_addr)[1]
+    # print("Served from port ", port)
+    while 1:
+        try:
+            data = clientsocket.recv(5000)
+            if(not data):
+                break
+            data = data.decode('utf-8')
+            res = process(data)
+            clientsocket.send(res.encode('utf-8'))
+            if(method == 'GET'):
+                try:
+                    clientsocket.send(resource)
+                except:
+                    pass
+            conntype = getConnection(data)
+            if(conntype == "close"):
+                clientsocket.close()
+                break
+        except socket.timeout:
+            print('Closing connection')
+            clientsocket.close()
+            break
+    print('Ended the Thread')
     return
 
 
+def stopserver(signal, frame):
+    s.close()
+    sys.exit(1)
+
+
 if __name__ == "__main__":
+    signal.signal(signal.SIGINT, stopserver)
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind(('', int(sys.argv[1])))
     s.listen(90)
-
     print("Listening on port {}".format(sys.argv[1]))
-    # TODO
-    # Implement with multithreading
     logger = Logger()
-    # while 1:
-    #     clientsocket, clientaddr = s.accept()
-    #     # threading.Thread()
-    #     try:
-    #         while 1:
-    #             data = clientsocket.recv(5000).decode('utf-8')
-    #             res = process(data)
-    #             if ('\r\n\r\n' in data):
-    #                 break
+    while 1:
+        clientsocket, client_addr = s.accept()
+        threading.Thread(target=accept_client,
+                         args=(clientsocket, client_addr,)).start()
 
-    #         clientsocket.send(res.encode('utf-8'))
-    #         if (method == "GET"):
-    #             clientsocket.send(resource)
-    #     except:
-    #         error = sys.exc_info()[0]
-    #         print(error)
-    #     finally:
-    #         clientsocket.close()
-    #         # f.close()
-
-    try:
-        server_thread = threading.Thread(target=accept_client, args=(s, ))
-        server_thread.start()
-    except:
-        print("Unable to start thread")
+    # try:
+    #     server_thread = threading.Thread(target=accept_client, args=(s, ))
+    #     server_thread.start()
+    # except:
+    #     print("Unable to start thread")

@@ -26,11 +26,11 @@ def generateResponse(length,
     # lastModified = datetime.datetime(int(lastModified))
     # if(ctype != "text/html;charset=UTF-8"):
     #     ctype = ctype
-    print(ctype)
+    # print(ctype)
     statusLine = "HTTP/1.1 {} {}\r\n".format(code, codes[code])
     responseHeaders = "Server: mHTTP-Alpha0\r\n"
 
-    entityHeaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: {}\r\n\r\n".format(
+    entityHeaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: {}\r\nConnection: keep-alive\r\nSet-Cookie: anup=nair\r\n\r\n".format(
         ctype, date, length, encoding)
 
     return statusLine + responseHeaders + entityHeaders
