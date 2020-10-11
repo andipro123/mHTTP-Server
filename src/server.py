@@ -20,7 +20,7 @@ from methods.put import parse_PUT_Request
 
 
 # Ideally get this from the config file
-documentRoot = str(pathlib.Path().absolute()) + "/assets"
+documentRoot = str(pathlib.Path().absolute()) + "/assets/"
 print(documentRoot)
 method = ""
 
