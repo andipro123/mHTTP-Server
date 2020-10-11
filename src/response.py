@@ -28,9 +28,9 @@ def generateResponse(length,
     #     ctype = ctype
     # print(ctype)
     statusLine = "HTTP/1.1 {} {}\r\n".format(code, codes[code])
-    responseHeaders = "Server: mHTTP-Alpha0\r\n"
+    responseheaders = "Server: mHTTP-Alpha0\r\n"
 
-    entityHeaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: {}\r\nConnection: keep-alive\r\nSet-Cookie: anup=nair\r\n\r\n".format(
-        ctype, date, length, encoding)
+    entityheaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: {}\r\nConnection: keep-alive\r\nSet-Cookie: anup=nair\r\nAllow: {}\r\n\r\n".format(
+        ctype, date, length, entityHeaders['Allow'])
 
-    return statusLine + responseHeaders + entityHeaders
+    return statusLine + responseheaders + entityheaders

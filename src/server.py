@@ -6,6 +6,7 @@ import os
 import pathlib
 from response import generateResponse
 from utils.mediaTypes import mediaTypes
+from utils.entityHeaders import entityHeaders
 from logger import Logger
 import parsers
 import signal
@@ -61,13 +62,23 @@ def parse_GET_Request(headers, method=""):
             length = len(resource)
         except:
             pass
+        if('Content-Encoding' in params.keys() and params['Content-Encoding'] not in entityHeaders['Content-Encoding']):
+            res = generateResponse(0, 415)
+            print(res)
+            return res
+        if('Content-Encoding' in params.keys() and params['Content-Encoding'] == 'gzip'):
+            res = generateResponse(length, 200, resource, lastModified, par[0])
+            res = res[:len(res) - 2] + 'Content-Encoding: gzip' + '\r\n\r\n'
+            print(res)
+            return res
         if (method == "HEAD"):
             res = generateResponse(length, 200, resource, lastModified, par[0],
                                    "HEAD")
             print(res)
         else:
             res = generateResponse(length, 200, resource, lastModified, par[0])
-        logger.generate(headers[0], res)
+        # logger.generate(headers[0], res)
+        print(res)
         return res
     except FileNotFoundError:
         res = generateResponse(length, 404)
@@ -87,17 +98,7 @@ def parse_POST_Request(headers):
     global f
 
     body = []
-    # for i in headers[1:]:
-
-    #     if ':' in i:
-    #         headerField = i[:i.index(':')]
-    #         params[headerField] = i[i.index(':') + 2:len(i) - 1]
-    #     except:
-    #         if i != '\r' and i != '\n':
-    #             body.append(i)
-
     params, body = parsers.parse_headers(headers)
-
     path = headers[0].split(' ')[1]
     # print(params)
     if (path == "/"):
@@ -227,7 +228,7 @@ def getConnection(data):
 # Runs a thread that accepts connections on the same socket and closes the TCP connection when socket times out
 def accept_client(clientsocket, client_addr):
     global resource
-    print('Started the Thread')
+    # print('Started the Thread')
     clientsocket.settimeout(10)
     port = list(client_addr)[1]
     # print("Served from port ", port)
@@ -239,6 +240,9 @@ def accept_client(clientsocket, client_addr):
             data = data.decode('utf-8')
             res = process(data)
             clientsocket.send(res.encode('utf-8'))
+            if('gzip' in res):
+                clientsocket.send(
+                    ('H4sIAAAAAAAA/wvJyCxWAKJEhfSqzAKF1Lzk/JTMvHQAX+v29BcAAAA=').encode('utf-8'))
             if (method == 'GET'):
                 try:
                     clientsocket.send(resource)
@@ -249,10 +253,10 @@ def accept_client(clientsocket, client_addr):
                 clientsocket.close()
                 break
         except socket.timeout:
-            print('Closing connection')
+            # print('Closing connection')
             clientsocket.close()
             break
-    print('Ended the Thread')
+    # print('Ended the Thread')
     return
 
 
