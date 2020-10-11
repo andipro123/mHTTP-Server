@@ -1,6 +1,7 @@
 # from concurrent.futures import ThreadPoolExecutor
 import requests
 import threading
+import time
 import sys
 
 # def get_url(url):
@@ -9,6 +10,7 @@ import sys
 
 def send_request(url):
     print(requests.get(url))
+    time.sleep(10)
     return
 
 
