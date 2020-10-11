@@ -22,3 +22,8 @@ class Logger():
         log = req + res[0] + params['Date'] + '\n'
         logFile.write(log)
         logFile.close()
+    
+    def generatePOST(self,data):
+        file = open('./logs/post_log.txt',"a")
+        file.write(str(data))
+        file.close()
