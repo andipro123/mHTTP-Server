@@ -13,7 +13,8 @@ def generateResponse(length,
                      lastModified=None,
                      ctype="text/html;charset=UTF-8",
                      method="",
-                     encoding="gzip"):
+                     encoding="gzip",
+                     etag="changelater"):
     if (code not in codes.keys()):
         return
     date = datetime.datetime.now(tz=pytz.utc)
@@ -28,9 +29,9 @@ def generateResponse(length,
     #     ctype = ctype
     # print(ctype)
     statusLine = "HTTP/1.1 {} {}\r\n".format(code, codes[code])
-    responseheaders = "Server: mHTTP-Alpha0\r\n"
+    responseheaders = "Server: mHTTP-Alpha1\r\n"
 
-    entityheaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: {}\r\nConnection: keep-alive\r\nSet-Cookie: anup=nair\r\nAllow: {}\r\n\r\n".format(
-        ctype, date, length, entityHeaders['Allow'])
+    entityheaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: {}\r\nConnection: keep-alive\r\nSet-Cookie: anup=nair\r\nAllow: {}\r\nE-Tag: {}\r\n\r\n".format(
+        ctype, date, length, entityHeaders['Allow'],etag)
 
     return statusLine + responseheaders + entityheaders

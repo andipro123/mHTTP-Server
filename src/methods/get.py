@@ -49,40 +49,43 @@ def parse_GET_Request(headers,method=""):
             length = len(resource)
         except:
             pass
-        #415
-        if('Content-Encoding' in params.keys() and params['Content-Encoding'] not in entityHeaders['Content-Encoding']):
-            res = generateResponse(0, 415)
-            print(res)
-            f.close()
-            return res, ""
-        #200
-        if('Content-Encoding' in params.keys() and params['Content-Encoding'] == 'gzip'):
-            res = generateResponse(length, 200, resource, lastModified, par[0])
-            res = res[:len(res) - 2] + 'Content-Encoding: gzip' + '\r\n\r\n'
-            print(res)
-            f.close()
-            return res, resource
-        #head
         if (method == "HEAD"):
             res = generateResponse(length, 200, resource, lastModified, par[0],
                                    "HEAD")
             print(res)
             return res, ""
         else:
+            #415
+            if('Content-Encoding' in params.keys() and params['Content-Encoding'] not in entityHeaders['Content-Encoding']):
+                res = generateResponse(0, 415)
+                f.close()
+                return res, ""
             res = generateResponse(length, 200, resource, lastModified, par[0])
+        
+        if('If-None-Match' in params.keys()):
+            # e = getEtag(f)
+            e = "Anup"
+            if(e == params['If-None-Match']):
+                return generateResponse(0, 304, resource, lastModified, par[0]),""
+                
+        
+        #Successfull Content Encoding
+        if('Content-Encoding' in params.keys() and params['Content-Encoding'] == 'gzip'):
+            res = res[:len(res) - 2] + 'Content-Encoding: gzip' + '\r\n\r\n'
+        #Check at end
+        if('Accept-Ranges' in params.keys()):
+            k = int(params['Accept-Ranges'])
+            resRange = resource[:k]
+            res = res[:len(res) - 2] + 'Accept-Ranges: {}'.format(k) + '\r\n\r\n'
+            resource = resRange
+        
         logger.generate(headers[0], res)
         print(res)
         f.close()
         return res , resource
+
     except FileNotFoundError:
         res = generateResponse(length, 404)
         logger.generate(headers[0], res)
         return res, ""
 
-
-def parse_HEAD_Request(headers):
-    # Returns the response of GET without the message body
-    # TODO
-    # Add more headers to the repsonse in the reponse.py file
-    # Handle Caching with GET
-    return parse_GET_Request(headers, "HEAD")

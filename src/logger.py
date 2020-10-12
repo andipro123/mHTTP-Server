@@ -27,3 +27,9 @@ class Logger():
         file = open('./logs/post_log.txt',"a")
         file.write(str(data))
         file.close()
+    
+    def generateError(self,data):
+        file = open('./logs/error_log.txt',"a")
+        res = "Error generated with code {}".format(data)
+        file.write(res)
+        file.close()
