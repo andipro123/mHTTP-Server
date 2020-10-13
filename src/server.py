@@ -79,7 +79,7 @@ def accept_client(clientsocket, client_addr):
             else:
                 res = process(data)
             clientsocket.send(res.encode('utf-8'))
-            if (method == 'GET'):
+            if (method == 'GET' or method == 'POST'):
                 try:
                     if(len(resource)):
                         clientsocket.send(resource)

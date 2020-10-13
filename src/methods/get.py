@@ -2,10 +2,11 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join('..')))
 from utils import entityHeaders
-from response import generateResponse
+from response import *
 from logger import Logger
 import pathlib
 from utils.mediaTypes import mediaTypes
+import random
 
 documentRoot = str(pathlib.Path().absolute()) + "/assets/"
 logger = Logger()
@@ -16,6 +17,8 @@ def getExtension(mediaTypes):
         f[mediaTypes[k]] = k
     return f
 
+def generateEtag(time,length):
+    return str(int(time)) + str(length)
 def matchAccept(headers):
     k = headers.split(',')
     par = []
@@ -57,13 +60,20 @@ def parse_GET_Request(headers,method=""):
         f = open(path, "rb")
         resource = f.read()
         lastModified = os.path.getmtime(path)
+        Etag = generateEtag(lastModified,len(resource))
         try:
             length = len(resource)
         except:
             pass
+        reqParams = {
+            'length' : length,
+            'code' : 200,
+            'ctype' : ctype,
+            'etag' : Etag,
+        }
         if (method == "HEAD"):
-            res = generateResponse(length, 200, resource, lastModified, ctype,
-                                   "HEAD")
+            # res = generateResponse(length, 200, resource, lastModified, ctype,"HEAD")
+            res = generateGET(reqParams)
             print(res)
             return res, ""
         else:
@@ -72,13 +82,17 @@ def parse_GET_Request(headers,method=""):
                 res = generateResponse(0, 415)
                 f.close()
                 return res, ""
-            res = generateResponse(length, 200, resource, lastModified, ctype)
+            res = generateGET(reqParams)
+            # res = generateResponse(length, 200, resource, lastModified, ctype,Etag)
         
         if('If-None-Match' in params.keys()):
             # e = getEtag(f)
-            e = "Anup"
+            e = Etag
             if(e == params['If-None-Match']):
-                return generateResponse(0, 304, resource, lastModified, par[0]),""
+                reqParams['code'] = 0
+                reqParams['length'] = 0
+                return generateGET(reqParams), ""
+                # return generateResponse(0, 304, resource, lastModified, ctype),""
                 
         
         #Successfull Content Encoding
@@ -97,7 +111,10 @@ def parse_GET_Request(headers,method=""):
         return res , resource
 
     except FileNotFoundError:
-        res = generateResponse(length, 404)
+        reqParams['code'] = 404
+        reqParams['length'] = 0
+        # res = generateResponse(length, 404)
+        res = generateGET(reqParams)
         logger.generate(headers[0], res)
         return res, ""
 
