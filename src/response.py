@@ -7,14 +7,7 @@ from utils.entityHeaders import entityHeaders
 # Response = Status Line + Response Headers + Entity Headers + Entity Body
 
 
-def generateResponse(length,
-                     code,
-                     resource=None,
-                     lastModified=None,
-                     ctype="text/html;charset=UTF-8",
-                     method="",
-                     encoding="gzip",
-                     etag="changelater"):
+def generateResponse(length,code,resource=None,lastModified=None,ctype="text/html;charset=UTF-8",method="",encoding="gzip",etag="changelater"):
     if (code not in codes.keys()):
         return
     date = datetime.datetime.now(tz=pytz.utc)

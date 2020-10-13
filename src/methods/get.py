@@ -5,10 +5,16 @@ from utils import entityHeaders
 from response import generateResponse
 from logger import Logger
 import pathlib
+from utils.mediaTypes import mediaTypes
 
 documentRoot = str(pathlib.Path().absolute()) + "/assets/"
 logger = Logger()
 
+def getExtension(mediaTypes):
+    f = {}
+    for k in mediaTypes.keys():
+        f[mediaTypes[k]] = k
+    return f
 
 def matchAccept(headers):
     k = headers.split(',')
@@ -37,11 +43,17 @@ def parse_GET_Request(headers,method=""):
     par = matchAccept(params['Accept'])
     path = headers[0].split(' ')[1]
     length = 0
+    ctype = "text/html"
     try:
         if (path == "/"):
             path = documentRoot + 'index.html'
         else:
-            path = documentRoot + path
+            try:
+                extension ='.' + path.split('.')[1]
+                ctype = getExtension(mediaTypes)[extension]
+                path = documentRoot + path
+            except:
+                ctype = par[0]
         f = open(path, "rb")
         resource = f.read()
         lastModified = os.path.getmtime(path)
@@ -50,7 +62,7 @@ def parse_GET_Request(headers,method=""):
         except:
             pass
         if (method == "HEAD"):
-            res = generateResponse(length, 200, resource, lastModified, par[0],
+            res = generateResponse(length, 200, resource, lastModified, ctype,
                                    "HEAD")
             print(res)
             return res, ""
@@ -60,7 +72,7 @@ def parse_GET_Request(headers,method=""):
                 res = generateResponse(0, 415)
                 f.close()
                 return res, ""
-            res = generateResponse(length, 200, resource, lastModified, par[0])
+            res = generateResponse(length, 200, resource, lastModified, ctype)
         
         if('If-None-Match' in params.keys()):
             # e = getEtag(f)
