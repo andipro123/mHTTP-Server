@@ -53,4 +53,5 @@ def parse_POST_Request(headers):
     logger.generatePOST(str(form_data) + '\n')
 
     res = generateResponse(len(body[0]), response_code, body[0], None)
+    print(res)
     return res

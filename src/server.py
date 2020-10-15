@@ -19,8 +19,8 @@ from methods.post import parse_POST_Request
 
 # Ideally get this from the config file
 documentRoot = str(pathlib.Path().absolute()) + "/assets/"
-print(documentRoot)
 method = ""
+logger = Logger()
 
 
 def process(data):
@@ -28,6 +28,7 @@ def process(data):
         global method
         headers = [i for i in data.split('\n')]
         tokens = headers[0].split(' ')
+        httpVersion = tokens[2]
         method = tokens[0]
         if (method == 'GET'):
             return parse_GET_Request(headers)
@@ -39,6 +40,9 @@ def process(data):
             return parse_HEAD_Request(headers)
         elif (method == 'DELETE'):
             return parse_DELETE_Request(headers)
+        else:
+            logger.generateError(501)
+            return generateResponse(0, 501)
     except:
         error = sys.exc_info()[0]
         print(error.with_traceback())
@@ -74,11 +78,7 @@ def accept_client(clientsocket, client_addr):
             else:
                 res = process(data)
             clientsocket.send(res.encode('utf-8'))
-            if ('gzip' in res):
-                clientsocket.send(
-                    ('H4sIAAAAAAAA/wvJyCxWAKJEhfSqzAKF1Lzk/JTMvHQAX+v29BcAAAA='
-                     ).encode('utf-8'))
-            if (method == 'GET'):
+            if (method == 'GET' or method == 'POST'):
                 try:
                     if (len(resource)):
                         clientsocket.send(resource)
