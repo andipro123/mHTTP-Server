@@ -40,5 +40,7 @@ def generateResponse(length,code,resource=None,lastModified=None,ctype="text/htm
 
     entityheaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: {}\r\nConnection: keep-alive\r\nSet-Cookie: anup=nair\r\nAllow: {}\r\nE-Tag: {}\r\n\r\n".format(
         ctype, date, length, entityHeaders['Allow'],etag)
-
+    if(etag == ''):
+        #remove the etag header
+        pass
     return response + entityheaders

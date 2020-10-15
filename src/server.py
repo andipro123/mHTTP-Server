@@ -11,17 +11,20 @@ from logger import Logger
 import parsers
 import signal
 sys.path.append(os.path.abspath(os.path.join('methods')))
+sys.path.append(os.path.abspath(os.path.join('config')))
+
 from methods.get import parse_GET_Request
 from methods.head import parse_HEAD_Request
 from methods.delete import parse_DELETE_Request
 from methods.post import parse_POST_Request
 # from methods.put import parse_PUT_Request
+# from getconfig import getconfig
 
 # Ideally get this from the config file
+# config = getconfig()
 documentRoot = str(pathlib.Path().absolute()) + "/assets/"
 method = ""
 logger = Logger()
-
 
 def process(data):
     try:
@@ -65,6 +68,7 @@ def accept_client(clientsocket, client_addr):
     # print('Started the Thread')
     clientsocket.settimeout(10)
     port = list(client_addr)[1]
+    hostip = list(client_addr)[0]
     # print("Served from port ", port)
     while 1:
         try:

@@ -15,7 +15,14 @@ Current progress:
 
 WIP:
 
-1. Improvements to Multithreading.
-2. PUT method
-3. Add an error logger
-4. Cache and additional get methods
+1. Cache and additional get methods
+
+GET, POST, PUT, HEAD, DELETE,
+Cookies,
+Headers,
+non-persistent connections,
+Multiple clients at the same time (with a sepearate program to test this),
+logging with levels of logging,
+handling file permissions;
+Server configuration - config file with DocumentRoot, log file name, max simulateneous connections ;
+way to stop and restart the server;

@@ -57,6 +57,12 @@ def parse_GET_Request(headers,method=""):
                 path = documentRoot + path
             except:
                 ctype = par[0]
+        reqParams = {
+            'length' : 0,
+            'code' : 200,
+            'ctype' : ctype,
+            'etag' : '',
+        }
         f = open(path, "rb")
         resource = f.read()
         lastModified = os.path.getmtime(path)
@@ -65,12 +71,8 @@ def parse_GET_Request(headers,method=""):
             length = len(resource)
         except:
             pass
-        reqParams = {
-            'length' : length,
-            'code' : 200,
-            'ctype' : ctype,
-            'etag' : Etag,
-        }
+        reqParams['etag'] = Etag
+        reqParams['length'] = length
         if (method == "HEAD"):
             # res = generateResponse(length, 200, resource, lastModified, ctype,"HEAD")
             res = generateGET(reqParams)
@@ -89,7 +91,7 @@ def parse_GET_Request(headers,method=""):
             # e = getEtag(f)
             e = Etag
             if(e == params['If-None-Match']):
-                reqParams['code'] = 0
+                reqParams['code'] = 304
                 reqParams['length'] = 0
                 return generateGET(reqParams), ""
                 # return generateResponse(0, 304, resource, lastModified, ctype),""
@@ -116,5 +118,6 @@ def parse_GET_Request(headers,method=""):
         # res = generateResponse(length, 404)
         res = generateGET(reqParams)
         logger.generate(headers[0], res)
+        print(res)
         return res, ""
 

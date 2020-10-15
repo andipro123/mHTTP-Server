@@ -1,10 +1,13 @@
 # Get this from the config file
-logPath = './logs/get_log.txt'
-
-# Log format
-# Req <> Status Line <> Timestamp
+logPath = './logs/access_log.txt'
 
 
+#  "%h %l %u %t \"%r\" %>s %b"
+# Format of the log files:
+# [time] req rescode length
+
+#TODO
+# Add the host ip to the request
 class Logger():
     def __init__(self):
         pass
@@ -19,8 +22,13 @@ class Logger():
                 params[headerField] = i[i.index(':') + 2:len(i) - 1]
             except:
                 pass
-        log = req + res[0] + params['Date'] + '\n'
-        logFile.write(log)
+        # log = req + res[0] + params['Date'] + '\n'
+        code = res[0].split(' ')[1]
+        date = params['Date'].split(' ')
+        datestr = date[1] + '/' + date[2] + '/' + date[3] + ':' + date[4] + " " + date[5]
+
+        log = "[{}] \"{}\" {} {}\n".format(datestr,req[:len(req) - 1],code,params['Content-Length'])
+        logFile.write(log)  
         logFile.close()
     
     def generatePOST(self,data):
