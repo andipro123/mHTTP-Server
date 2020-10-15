@@ -1,10 +1,10 @@
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join('..')))
-from response import generateResponse
+from response import *
 from logger import Logger
 import pathlib
-import parsers
+from parsers import *
 
 documentRoot = str(pathlib.Path().absolute()) + "/assets/"
 logger = Logger()
@@ -18,11 +18,11 @@ def parse_POST_Request(headers):
     # Extending a database through an append operation.
 
     # For the purpose of the project, POST methods will write the incoming data into a logs file
-    global resource
-    global f
+    resource = ''
+    f = ''
 
     body = []
-    params, body = parsers.parse_headers(headers)
+    params, body = parse_headers(headers)
     path = headers[0].split(' ')[1]
     # print(params)
     if (path == "/"):
@@ -49,7 +49,7 @@ def parse_POST_Request(headers):
     content_type = params['Content-Type']
     print(content_type)
 
-    form_data = parsers.parse_body(content_type, body)
+    form_data = parse_body(content_type, body, 'POST')
     logger.generatePOST(str(form_data) + '\n')
 
     res = generateResponse(len(body[0]), response_code, body[0], None)

@@ -15,14 +15,13 @@ from methods.get import parse_GET_Request
 from methods.head import parse_HEAD_Request
 from methods.delete import parse_DELETE_Request
 from methods.post import parse_POST_Request
-from methods.put import parse_PUT_Request
-
-
+# from methods.put import parse_PUT_Request
 
 # Ideally get this from the config file
 documentRoot = str(pathlib.Path().absolute()) + "/assets/"
 method = ""
 logger = Logger()
+
 
 def process(data):
     try:
@@ -43,7 +42,7 @@ def process(data):
             return parse_DELETE_Request(headers)
         else:
             logger.generateError(501)
-            return generateResponse(0,501)
+            return generateResponse(0, 501)
     except:
         error = sys.exc_info()[0]
         print(error.with_traceback())
@@ -74,14 +73,14 @@ def accept_client(clientsocket, client_addr):
                 break
             data = data.decode('utf-8')
             method = data.split('\n')[0].split(' ')[0]
-            if(method == "GET" or method == "HEAD"):
+            if (method == "GET" or method == "HEAD"):
                 res, resource = process(data)
             else:
                 res = process(data)
             clientsocket.send(res.encode('utf-8'))
             if (method == 'GET' or method == 'POST'):
                 try:
-                    if(len(resource)):
+                    if (len(resource)):
                         clientsocket.send(resource)
                 except e:
                     print(e)
@@ -111,4 +110,8 @@ if __name__ == "__main__":
     print("Listening on port {}".format(sys.argv[1]))
     while 1:
         clientsocket, client_addr = s.accept()
-        threading.Thread(target=accept_client,args=(clientsocket,client_addr,)).start()
+        threading.Thread(target=accept_client,
+                         args=(
+                             clientsocket,
+                             client_addr,
+                         )).start()

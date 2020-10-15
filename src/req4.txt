@@ -1,0 +1,29 @@
+PUT /test.html HTTP/1.1
+Host: 127.0.0.1:12000
+Connection: keep-alive
+Content-Length: 3254
+Cache-Control: max-age=0
+Origin: https://apply.mpi-sws.org
+Content-Type: text/html
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Referer: https://apply.mpi-sws.org/edit/26881/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+Cookie: csrftoken=DJLDlbYVCySdLcnuTk1uERBI5aRR6e9qZdAlZbogr8LOUIwwYZWH3C6ecrZUcEzZ; sessionid=de742pbefqvuolt96alu9vlpagc7s3oc
+
+<html>
+<head>
+<title>
+A Simple HTML Document
+</title>
+</head>
+<body>
+<p>This is a very simple HTML document</p>
+<p>It only has two paragraphs</p>
+</body>
+</html>
