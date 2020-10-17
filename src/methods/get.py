@@ -63,6 +63,9 @@ def parse_GET_Request(headers,method=""):
             'ctype' : ctype,
             'etag' : '',
         }
+        if(reqParams['ctype'] == "text/html" and path[len(path) - 4:] != 'html'):
+            path = documentRoot + path + '.html'
+            # print(path)
         f = open(path, "rb")
         resource = f.read()
         lastModified = os.path.getmtime(path)
@@ -87,6 +90,10 @@ def parse_GET_Request(headers,method=""):
             res = generateGET(reqParams)
             # res = generateResponse(length, 200, resource, lastModified, ctype,Etag)
         
+        if('cookie' in params.keys()):
+            print(params['cookie'])
+            print("in")
+
         if('If-None-Match' in params.keys()):
             # e = getEtag(f)
             e = Etag

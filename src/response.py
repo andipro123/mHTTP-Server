@@ -1,19 +1,41 @@
 import pytz
-import datetime
+from datetime import datetime, timedelta
 from utils.statusCodes import codes
 from utils.responseHeaders import responseHeaders
 from utils.entityHeaders import entityHeaders
+import random
 
 # Response = Status Line + Response Headers + Entity Headers + Entity Body
 
-def metaData(code):
-    date = datetime.datetime.now(tz=pytz.utc)
+def getTime(offset = 0):
+
+    date = datetime.now(tz=pytz.utc) + timedelta(minutes = offset)
     time = " {}:{}:{} GMT".format(date.strftime("%H"), date.strftime("%M"),date.strftime("%S"))
     date = date.strftime("%a") + ', ' + str(date.strftime("%d")) + " " + date.strftime("%b") + " " + str(date.year) + time
+    return date
 
+def metaData(code):
+    date = getTime()
     statusLine = "HTTP/1.1 {} {}\r\n".format(code, codes[code])
     responseheaders = "Server: mHTTP-Alpha1\r\n"
     return date, statusLine + responseheaders
+
+def setCookie():
+    #Generate a random integer as a cookie value along with some text and send it
+    #Expires: Lifetime of the cookie in the browser
+    #Path: sends cookie only if the path is present in the URL
+    #Domain: access to the allowed set of domains
+    #Secure: Cookie is sent over secure HTTPS requests
+    #HttpOnly: Cookie cant be accessed by javascript API
+    cookie =  "cook" + str(random.randint(1,5000)) + "ie"
+    Expires = getTime(4)
+    Path = "/cart"
+    Domain = ""  #Serves all hosts
+    
+    cookieHeader =  "Set-Cookie: cID={}; Expires={}; Path={};Domain = {};\r\n".format(cookie, Expires,Path, Domain)
+    # print(cookieHeader)
+    return cookieHeader
+
 
 def generateGET(headers):
     code = headers['code']
@@ -21,9 +43,15 @@ def generateGET(headers):
         return
     date, response = metaData(code)
 
-    entityheaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: {}\r\nConnection: keep-alive\r\nSet-Cookie: anup=nair\r\nAllow: {}\r\nE-Tag: {}\r\n\r\n".format(
-    headers['ctype'], date, headers['length'], entityHeaders['Allow'],headers['etag'])
-
+    entityheaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: {}\r\nConnection: keep-alive\r\nAllow: {}\r\n".format(
+    headers['ctype'], date, headers['length'], entityHeaders['Allow'])
+    etag = headers['etag']
+    if(etag != ''):
+        entityheaders += setCookie()
+        entityheaders += 'E-Tag: {}\r\n\r\n'.format(headers['etag'])
+    else:
+        entityheaders += setCookie() + '\r\n'
+    # setCookie()
     return response + entityheaders
 
 
