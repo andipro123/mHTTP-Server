@@ -9,7 +9,7 @@ import random
 
 def getTime(offset = 0):
 
-    date = datetime.now(tz=pytz.utc) + timedelta(minutes = offset)
+    date = datetime.now(tz=pytz.utc) + timedelta(seconds = offset)
     time = " {}:{}:{} GMT".format(date.strftime("%H"), date.strftime("%M"),date.strftime("%S"))
     date = date.strftime("%a") + ', ' + str(date.strftime("%d")) + " " + date.strftime("%b") + " " + str(date.year) + time
     return date
@@ -28,10 +28,13 @@ def setCookie():
     #Secure: Cookie is sent over secure HTTPS requests
     #HttpOnly: Cookie cant be accessed by javascript API
     cookie =  "cook" + str(random.randint(1,5000)) + "ie"
+    user = "dev1"
     Expires = getTime(4)
     Path = "/cart"
     Domain = ""  #Serves all hosts
-    
+    # f = open('./test/data.txt', "a")
+    # f.write(cookie + ":" + user + '\n')
+    # f.close()
     cookieHeader =  "Set-Cookie: cID={}; Expires={}; Path={};Domain = {};\r\n".format(cookie, Expires,Path, Domain)
     # print(cookieHeader)
     return cookieHeader
@@ -42,15 +45,16 @@ def generateGET(headers):
     if (code not in codes.keys()):
         return
     date, response = metaData(code)
-
     entityheaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: {}\r\nConnection: keep-alive\r\nAllow: {}\r\n".format(
     headers['ctype'], date, headers['length'], entityHeaders['Allow'])
     etag = headers['etag']
     if(etag != ''):
-        entityheaders += setCookie()
+        if('Cookie' not in headers.keys()):
+            entityheaders += setCookie()
         entityheaders += 'E-Tag: {}\r\n\r\n'.format(headers['etag'])
     else:
-        entityheaders += setCookie() + '\r\n'
+        if('Cookie' not in headers.keys()):
+            entityheaders += setCookie() + '\r\n'
     # setCookie()
     return response + entityheaders
 

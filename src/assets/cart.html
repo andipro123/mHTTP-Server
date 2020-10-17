@@ -2,8 +2,15 @@
     <title>Cart</title>
     <h3 id = "test"></h3>
         <script>
-            const a = document.cookie
-            let k = document.getElementById("test")
-            k.innerText = a
+            if(localStorage.getItem('cookie') != document.cookie){
+                const a = document.cookie
+                localStorage.setItem('cookie',a)
+                let k = document.getElementById("test") 
+                k.innerText = "Cookie expired. Refresh again"
+            }
+            else{
+                let k = document.getElementById("test") 
+                k.innerText = "Logged in"
+            }
         </script>
 </html>

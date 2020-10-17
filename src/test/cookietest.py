@@ -1,15 +1,16 @@
 import requests
+import sys
+import time
+print("Making a first time request.....")
 
-
-
-
-port = 5001
+port = sys.argv[1]
 url = 'http://localhost:{}/cart'.format(port)
+
 r = requests.get(url)
-
-print(r.headers)
 cookie = (r.headers['Set-Cookie'])
+print("Recieved cookie from server:\n{}".format(cookie))
 
-r = requests.get(url, {'cookie' : cookie})
+print("Making a second request with the cookie .....")
+r = requests.get(url, headers = {'Cookie' : cookie})
 
-print(r.headers)
+print(r.status_code)
