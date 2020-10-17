@@ -26,6 +26,7 @@ documentRoot = str(pathlib.Path().absolute()) + "/assets/"
 method = ""
 logger = Logger()
 
+
 def process(data):
     try:
         global method
@@ -75,9 +76,10 @@ def accept_client(clientsocket, client_addr):
             data = clientsocket.recv(5000)
             if (not data):
                 break
+            print(data)
             data = data.decode('utf-8')
             method = data.split('\n')[0].split(' ')[0]
-            if (method == "GET" or method == "HEAD"):
+            if (method == "GET" or method == "HEAD" or method == "POST"):
                 res, resource = process(data)
             else:
                 res = process(data)
