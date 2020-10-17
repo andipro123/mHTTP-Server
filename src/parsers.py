@@ -58,5 +58,24 @@ def parse_body(enctype, body, type):
         return form_data
 
     elif type == 'PUT':
-        print(body)
-        return body
+        form_data = {}
+        boundary = enctype[enctype.find("=") + 1:]
+        key = ''
+        value = ''
+        print(boundary)
+        for line in body[1:]:
+
+            if '----' in line:
+                form_data[key] = value
+                key = ''
+                value = ''
+            elif 'Content-Disposition: form-data' in line:
+                key = line[line.index('=') + 2:-2]
+                value = body[body.index(line) + 2][:-1]
+
+            elif 'Content-Type' in line:
+                form_data['filedata'] = body[body.index(line) + 2]
+            else:
+                pass
+        print(form_data)
+        return form_data

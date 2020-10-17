@@ -31,12 +31,12 @@ def parse_PUT_Request(headers):
     # check if the file exists already
     if os.path.exists(path):
         if os.access(path, os.W_OK):
-            f1 = open(path, 'w+b')
+            f1 = open(path, 'w', encoding='utf-8')
             response_code = 200
         else:
             response_code = 403
     else:
-        f1 = open(path, 'w')
+        f1 = open(path, 'w', encoding='utf-8')
         response_code = 201
 
     if response_code == 403:
@@ -46,11 +46,10 @@ def parse_PUT_Request(headers):
     content_type = params['Content-Type']
 
     body = parse_body(content_type, body, "PUT")
-    body = ''.join(body)
     #logger
-    f1.write(body)
+    f1.write(body['filedata'])
 
-    return generateResponse(0, response_code, body[0])
+    return generateResponse(0, response_code, "")
 
 
 print('HI')

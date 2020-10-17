@@ -47,11 +47,11 @@ def parse_POST_Request(headers):
 
     # Handle application/x-www-form-urlencoded type of data
     content_type = params['Content-Type']
-    print(content_type)
+    # print(content_type)
 
     form_data = parse_body(content_type, body, 'POST')
     logger.generatePOST(str(form_data) + '\n')
 
     res = generateResponse(len(body[0]), response_code, body[0], None)
-    print(res)
-    return res
+    # print(res)
+    return (res, "")
