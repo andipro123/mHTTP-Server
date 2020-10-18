@@ -52,10 +52,15 @@ def parse_GET_Request(headers,method=""):
             path = documentRoot + 'index.html'
         else:
             try:
-                extension ='.' + path.split('.')[1]
+                try:
+                    extension ='.' + path.split('.')[1]
+                except:
+                    extension = '.html'
                 ctype = getExtension(mediaTypes)[extension]
                 path = documentRoot + path
-            except:
+                print(path)
+            except e:
+                print("Exceptions" , e)
                 ctype = par[0]
         reqParams = {
             'length' : 0,
@@ -63,9 +68,10 @@ def parse_GET_Request(headers,method=""):
             'ctype' : ctype,
             'etag' : '',
         }
-        if(reqParams['ctype'] == "text/html" or reqParams['ctype'] == "*/*" and path[len(path) - 4:] != 'html'):
-            path = documentRoot + path + '.html'
-            # print(path)
+        
+        if('.' not in path.split('\n')[-1]):
+            path += '.html' 
+        print(path)
         f = open(path, "rb")
         resource = f.read()
         lastModified = os.path.getmtime(path)

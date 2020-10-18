@@ -29,7 +29,7 @@ def setCookie():
     #HttpOnly: Cookie cant be accessed by javascript API
     cookie =  "cook" + str(random.randint(1,5000)) + "ie"
     user = "dev1"
-    Expires = getTime(4)
+    Expires = getTime(15)
     Path = "/cart"
     Domain = ""  #Serves all hosts
     # f = open('./test/data.txt', "a")
