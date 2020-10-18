@@ -58,7 +58,6 @@ def parse_GET_Request(headers,method=""):
                     extension = '.html'
                 ctype = getExtension(mediaTypes)[extension]
                 path = documentRoot + path
-                print(path)
             except e:
                 print("Exceptions" , e)
                 ctype = par[0]
@@ -71,7 +70,7 @@ def parse_GET_Request(headers,method=""):
         
         if('.' not in path.split('\n')[-1]):
             path += '.html' 
-        print(path)
+        # print(path)
         f = open(path, "rb")
         resource = f.read()
         lastModified = os.path.getmtime(path)

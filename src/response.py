@@ -30,7 +30,7 @@ def setCookie():
     cookie =  "cook" + str(random.randint(1,5000)) + "ie"
     user = "dev1"
     Expires = getTime(15)
-    Path = "/cart"
+    Path = "/login"
     Domain = ""  #Serves all hosts
     # f = open('./test/data.txt', "a")
     # f.write(cookie + ":" + user + '\n')

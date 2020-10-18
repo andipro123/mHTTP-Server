@@ -1,12 +1,15 @@
 <html>
-    <title>Cart</title>
-    <h3 id = "test"></h3>
+    <title>Cookie test</title>
+    <div style="text-align:center">
+        <h4>mHTTP server cookie test</h4>
+        <h3 id = "test"></h3>
+    </div>
         <script>
             if(localStorage.getItem('cookie') != document.cookie){
                 const a = document.cookie
                 localStorage.setItem('cookie',a)
                 let k = document.getElementById("test") 
-                k.innerText = "Cookie expired. Refresh again"
+                k.innerText = "Cookie expired. Refresh again to get a new cookie"
             }
             else{
                 let k = document.getElementById("test") 
