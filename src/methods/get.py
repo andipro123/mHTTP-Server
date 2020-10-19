@@ -7,9 +7,11 @@ from logger import Logger
 import pathlib
 from utils.mediaTypes import mediaTypes
 import random
+import gzip
 
 documentRoot = str(pathlib.Path().absolute()) + "/assets/"
 logger = Logger()
+qValue = []
 
 def getExtension(mediaTypes):
     f = {}
@@ -19,13 +21,25 @@ def getExtension(mediaTypes):
 
 def generateEtag(time,length):
     return str(int(time)) + str(length)
-def matchAccept(headers):
-    k = headers.split(',')
-    par = []
-    for i in k:
-        par.append(i)
-    return par
 
+def matchAccept():
+    par = []
+    for i in qValue:
+        par.append(list(i)[0])
+    return par
+def parseContentType(content):
+    global qValue
+    qValue = []
+    content = content.split(',')
+    for i in content:
+        k = i.split(';')
+        if(len(k) > 1):
+            qValue.append((k[0],float(k[1].split('=')[1])))
+    if(qValue == []):
+        qValue.append((content[0],1.0))
+    qValue.sort(key = lambda x:x[1], reverse = True)
+    # print(qValue)
+    return qValue
 
 def parse_GET_Request(headers,method=""):
     # TODO
@@ -37,16 +51,24 @@ def parse_GET_Request(headers,method=""):
     for i in headers[1:]:
         try:
             headerField = i[:i.index(':')]
+            if(headerField == "Accept"):
+                parseContentType(i[i.index(':') + 2: len(i) - 1] )
             params[headerField] = i[i.index(':') + 2:len(i) - 1]
-        except:
+        except :
             pass
-    if ('Cookie' in params.keys()):
-        print(params['Cookie'])
+    
     # Return 406 on not getting file with desired accept
-    par = matchAccept(params['Accept'])
-    path = headers[0].split(' ')[1]
-    length = 0
+    par = matchAccept()
+    # print(par)
     ctype = "text/html"
+    path = headers[0].split(' ')[1]
+    for i in par:
+        file = path.split('.')[0] + '.' + i.split('/')[1]
+        if os.path.exists(documentRoot + file):
+            ctype = i
+            break
+    length = 0
+    print(ctype)
     try:
         if (path == "/"):
             path = documentRoot + 'index.html'
@@ -60,7 +82,11 @@ def parse_GET_Request(headers,method=""):
                 path = documentRoot + path
             except e:
                 print("Exceptions" , e)
-                ctype = par[0]
+                for i in par:
+                    if(os.path.exists(documentRoot + i)):
+                        ctype = i
+                        break
+                # ctype = par[0]
         reqParams = {
             'length' : 0,
             'code' : 200,
@@ -89,14 +115,14 @@ def parse_GET_Request(headers,method=""):
             res = generateGET(reqParams)
             print(res)
             return res, ""
-        else:
-            #415
-            if('Content-Encoding' in params.keys() and params['Content-Encoding'] not in entityHeaders['Content-Encoding']):
-                res = generateResponse(0, 415)
-                f.close()
-                return res, ""
-            res = generateGET(reqParams)
-            # res = generateResponse(length, 200, resource, lastModified, ctype,Etag)
+        
+        #415
+        if('Content-Encoding' in params.keys() and params['Content-Encoding'] not in entityHeaders['Content-Encoding']):
+            res = generateResponse(0, 415)
+            f.close()
+            return res, ""
+        res = generateGET(reqParams)
+        # res = generateResponse(length, 200, resource, lastModified, ctype,Etag)
         
         if('If-None-Match' in params.keys()):
             # e = getEtag(f)
@@ -109,8 +135,12 @@ def parse_GET_Request(headers,method=""):
                 
         
         #Successfull Content Encoding
-        if('Content-Encoding' in params.keys() and params['Content-Encoding'] == 'gzip'):
-            res = res[:len(res) - 2] + 'Content-Encoding: gzip' + '\r\n\r\n'
+        if('Content-Encoding' in params.keys()):
+            if(params['Content-Encoding'] == 'gzip'):
+                res = res[:len(res) - 2] + 'Content-Encoding: gzip' + '\r\n\r\n'
+                resource = gzip.compress(resource)
+            elif(params['Content-Encoding'] == ''):
+                pass
         #Check at end
         if('Accept-Ranges' in params.keys()):
             k = int(params['Accept-Ranges'])
@@ -129,6 +159,6 @@ def parse_GET_Request(headers,method=""):
         # res = generateResponse(length, 404)
         res = generateGET(reqParams)
         logger.generate(headers[0], res)
-        print(res)
+        # print(res)
         return res, ""
 

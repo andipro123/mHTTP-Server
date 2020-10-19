@@ -45,7 +45,7 @@ def generateGET(headers):
     if (code not in codes.keys()):
         return
     date, response = metaData(code)
-    entityheaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: {}\r\nConnection: keep-alive\r\nAllow: {}\r\n".format(
+    entityheaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: {}\r\nContent-Language: en-US\r\nConnection: keep-alive\r\nAllow: {}\r\n".format(
     headers['ctype'], date, headers['length'], entityHeaders['Allow'])
     etag = headers['etag']
     if(etag != ''):
@@ -70,7 +70,7 @@ def generateResponse(length,code,resource=None,lastModified=None,ctype="text/htm
     #     ctype = ctype
     # print(ctype)
 
-    entityheaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: {}\r\nConnection: keep-alive\r\nSet-Cookie: anup=nair\r\nAllow: {}\r\nE-Tag: {}\r\n\r\n".format(
+    entityheaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: {}\r\nConnection: keep-alive\r\nAllow: {}\r\nE-Tag: {}\r\n\r\n".format(
         ctype, date, length, entityHeaders['Allow'],etag)
     if(etag == ''):
         #remove the etag header
