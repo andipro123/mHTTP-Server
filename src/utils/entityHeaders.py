@@ -1,6 +1,6 @@
 entityHeaders = {
     "Allow": "GET, HEAD, PUT",
-    "Content-Encoding": ["gzip", "defalte", "br"],  # imp
+    "Content-Encoding": ["gzip", "deflate", "br"],  # imp
     "Content-Language": "en",
     "Content-Length": 0,
     "Content-Location": "absoluteURI", "relativeURI"  # Cache usage
