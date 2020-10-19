@@ -43,10 +43,7 @@ def parseContentType(content):
 
 def parse_GET_Request(headers,method=""):
     # TODO
-    # Implement Conditional Get
-    # Implement Range Header
-    # MIME Encoding response
-    # Cache parameters
+    # Run tests
     params = {}
     for i in headers[1:]:
         try:
@@ -60,7 +57,9 @@ def parse_GET_Request(headers,method=""):
     # Return 406 on not getting file with desired accept
     par = matchAccept()
     # print(par)
-    ctype = "text/html"
+    ctype = ""
+    if('*/*' in par or 'text/html' in par):
+        ctype = "text/html"
     path = headers[0].split(' ')[1]
     for i in par:
         file = path.split('.')[0] + '.' + i.split('/')[1]
@@ -68,7 +67,15 @@ def parse_GET_Request(headers,method=""):
             ctype = i
             break
     length = 0
-    print(ctype)
+    if(ctype == ""):
+        reqParams = {
+            'code' : 406,
+            'ctype' : params['Accept'],
+            'length' : 0,
+            'etag' : ''
+        }
+        return generateGET(reqParams),""
+    # print(ctype)
     try:
         if (path == "/"):
             path = documentRoot + 'index.html'
@@ -77,8 +84,7 @@ def parse_GET_Request(headers,method=""):
                 try:
                     extension ='.' + path.split('.')[1]
                 except:
-                    extension = '.html'
-                ctype = getExtension(mediaTypes)[extension]
+                    extension = '.' + ctype.split('/')[1]
                 path = documentRoot + path
             except e:
                 print("Exceptions" , e)
@@ -95,7 +101,7 @@ def parse_GET_Request(headers,method=""):
         }
         
         if('.' not in path.split('\n')[-1]):
-            path += '.html' 
+            path += '.' + ctype.split('/')[1] 
         # print(path)
         f = open(path, "rb")
         resource = f.read()
