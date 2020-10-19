@@ -13,9 +13,12 @@ Current progress:
 3. Skeletal implementation of GET is worked on. POST, DELETE and HEAD are working as expected with few improvements to be done.
 4. Added a basic logger for generating server logs. (Access logs handled)
 
-WIP:
+TODO:
 
-1. Cache and additional get methods
+1. Config file (priority)
+2. Test scripts
+3. multilevel logging
+4. Headers(if any)
 
 GET, POST, PUT, HEAD, DELETE,
 Cookies,
