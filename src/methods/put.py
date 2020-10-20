@@ -9,7 +9,7 @@ documentRoot = str(pathlib.Path().absolute()) + "/assets/"
 logger = Logger()
 
 
-def parse_PUT_Request(headers):
+def parse_PUT_Request(headers, cli):
     # TODO
     # The PUT method requests that the enclosed entity be stored
     # under the supplied Request-URI. If the Request-
@@ -19,6 +19,7 @@ def parse_PUT_Request(headers):
 
     resource = ''
     f = ''
+    logger.client_addr = cli
 
     body = []
     params, body = parse_headers(headers)
@@ -42,12 +43,13 @@ def parse_PUT_Request(headers):
 
     if response_code == 403:
         res = generateResponse(0, 403)
+        logger.generateError(headers[0], res)
         return res
 
     content_type = params['Content-Type']
 
     body = parse_body(content_type, body, "PUT")
     #logger
-    f1.write(body)
+    f1.write(body['filedata'])
 
     return generateResponse(0, response_code, body[0])

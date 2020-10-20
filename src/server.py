@@ -27,7 +27,8 @@ method = ""
 logger = Logger()
 
 
-def process(data):
+def process(data, client_addr):
+
     try:
         global method
         headers = [i for i in data.split('\n')]
@@ -35,15 +36,15 @@ def process(data):
         httpVersion = tokens[2]
         method = tokens[0]
         if (method == 'GET'):
-            return parse_GET_Request(headers)
+            return parse_GET_Request(headers, client_addr)
         elif (method == 'POST'):
-            return parse_POST_Request(headers)
+            return parse_POST_Request(headers, client_addr)
         elif (method == 'PUT'):
-            return parse_PUT_Request(headers)
+            return parse_PUT_Request(headers, client_addr)
         elif (method == 'HEAD'):
-            return parse_HEAD_Request(headers)
+            return parse_HEAD_Request(headers, client_addr)
         elif (method == 'DELETE'):
-            return parse_DELETE_Request(headers)
+            return parse_DELETE_Request(headers, client_addr)
         else:
             logger.generateError(501)
             return generateResponse(0, 501)
@@ -80,9 +81,9 @@ def accept_client(clientsocket, client_addr):
             data = data.decode('utf-8')
             method = data.split('\n')[0].split(' ')[0]
             if (method == "GET" or method == "HEAD" or method == "POST"):
-                res, resource = process(data)
+                res, resource = process(data, client_addr)
             else:
-                res = process(data)
+                res = process(data, client_addr)
             clientsocket.send(res.encode('utf-8'))
             if (method == 'GET' or method == 'POST'):
                 try:

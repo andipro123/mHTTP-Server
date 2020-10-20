@@ -28,3 +28,12 @@
 {}
 {'name': 'a', 'surname': 'b', 'filename"; filename="xyz.drawio': ''}
 {'name': 'a', 'surname': 'b', 'filename"; filename="xyz.drawio': ''}
+{'name': 'a', 'surname': 'b', 'filename"; filename="': ''}
+{'name': 'a', 'surname': 'b', 'filename"; filename="': ''}
+{'name': 'a', 'surname': 'b', 'filename"; filename="': ''}
+{'name': 'boo', 'surname': 'lean', 'filename"; filename="': ''}
+{'name': 'aa', 'surname': 'df', 'filedata': '44 only\r', 'filename"; filename="co lecs to be seen.txt': ''}
+{}
+{}
+{}
+{'isFile': True, 'name': 'asd', 'surname': 'fd', 'filedata': '44 only\r', 'filename"; filename="co lecs to be seen.txt': ''}

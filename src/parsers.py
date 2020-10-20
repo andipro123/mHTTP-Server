@@ -38,7 +38,8 @@ def parse_body(enctype, body, type):
             boundary = enctype[enctype.find("=") + 1:]
             key = ''
             value = ''
-            print(boundary)
+            form_data['isFile'] = False
+            # print(boundary)
             for line in body[1:]:
 
                 if '----' in line:
@@ -49,12 +50,15 @@ def parse_body(enctype, body, type):
                     key = line[line.index('=') + 2:-2]
                     value = body[body.index(line) + 2][:-1]
 
+                elif 'Content-Type' in line:
+                    form_data['isFile'] = True
+                    form_data['filedata'] = body[body.index(line) + 2]
                 else:
                     pass
 
             # ----WebKitFormBoundarySv3nVnTn1MpFWg2P
             # ------WebKitFormBoundarySv3nVnTn1MpFWg2P\r
-        print(form_data)
+        # print(form_data)
         return form_data
 
     elif type == 'PUT':
@@ -62,7 +66,9 @@ def parse_body(enctype, body, type):
         boundary = enctype[enctype.find("=") + 1:]
         key = ''
         value = ''
-        print(boundary)
+        form_data['isFile'] = False
+
+        # print(boundary)
         for line in body[1:]:
 
             if '----' in line:
@@ -74,8 +80,9 @@ def parse_body(enctype, body, type):
                 value = body[body.index(line) + 2][:-1]
 
             elif 'Content-Type' in line:
+                form_data['isFile'] = True
                 form_data['filedata'] = body[body.index(line) + 2]
             else:
                 pass
-        print(form_data)
+        # print(form_data)
         return form_data
