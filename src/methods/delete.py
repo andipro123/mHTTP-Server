@@ -6,7 +6,8 @@ import pathlib
 documentRoot = str(pathlib.Path().absolute()) + "/assets/"
 logger = Logger()
 
-def parse_DELETE_Request(headers):
+
+def parse_DELETE_Request(headers, cli):
     # TODO
     # The DELETE method requests that the origin server delete the resource identified by the Request-URI.
     # The client cannot be guaranteed that the operation has been carried out,
@@ -16,6 +17,8 @@ def parse_DELETE_Request(headers):
     # time the response is given, it intends to delete the resource or move it to an inaccessible location.
     params = {}
     body = []
+    logger.client_addr = cli
+
     for i in headers[1:]:
 
         try:
@@ -39,6 +42,7 @@ def parse_DELETE_Request(headers):
             # Forbidden because delete permission not granted
             res = generateResponse(0, 403)
             logger.generate(headers[0], res)
+            logger.generateError(headers[0], res)
             return res
 
     else:
