@@ -1,7 +1,9 @@
 from get import parse_GET_Request
-def parse_HEAD_Request(headers):
+
+
+def parse_HEAD_Request(headers, cli):
     # Returns the response of GET without the message body
     # TODO
     # Add more headers to the repsonse in the reponse.py file
     # Handle Caching with GET
-    return parse_GET_Request(headers, "HEAD")
+    return parse_GET_Request(headers, cli, "HEAD")
