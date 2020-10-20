@@ -59,9 +59,15 @@ def parse_GET_Request(headers,method=""):
     par = matchAccept()
     # print(par)
     ctype = ""
+    path = headers[0].split(' ')[1]
     if('*/*' in par or 'text/html' in par):
         ctype = "text/html"
-    path = headers[0].split(' ')[1]
+        if('.' in path):
+            extension ='.' + path.split('.')[1]
+            if(extension != '.html'):
+                f = getExtension(mediaTypes)
+                ctype = f[extension]
+        
     for i in par:
         file = path.split('.')[0] + '.' + i.split('/')[1]
         if os.path.exists(documentRoot + file):

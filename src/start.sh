@@ -1,4 +1,3 @@
-#!/bin/bash
-RANDOM=$$
-python3 server.py 5001 &
-echo "started on 5001"
+python3 server.py 5000 &
+echo $! > .tmp.txt
+
