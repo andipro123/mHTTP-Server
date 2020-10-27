@@ -7,10 +7,10 @@ DOCUMENT_ROOT = str(pathlib.Path().absolute()) + '/assets/'
 TIMEOUT = 500
 
 #Default port number
-PORT = 5000
+PORT = 4000
 
 #Maximum number of conncetions supported simulataneously
-MAX_CONNECTIONS = 300
+MAX_CONNECTIONS = 3000
 
 #Access Log File directory
 LOG_FILE = str(pathlib.Path().absolute()) + '/logs/access_log.txt'

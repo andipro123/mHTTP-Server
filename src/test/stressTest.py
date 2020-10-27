@@ -5,7 +5,6 @@ import time
 import encodings.idna
 import http.client
 import platform
-import ssl
 from rich.console import Console
 
 port = sys.argv[1]
@@ -20,9 +19,14 @@ except:
 
 console = Console(highlight=False)
 
+def get_available_threads():
+    if sys.platform == 'win32':
+        return (int)(os.environ['NUMBER_OF_PROCESSORS'])
+    else:
+        return (int)(os.popen('grep -c cores /proc/cpuinfo').read())
+
 class Thread (threading.Thread):
     def __init__(self, port, n):
-        print("Started new thread")
         threading.Thread.__init__(self)
         self.user_agent = "StressTester({} {} {})".format(platform.system(), os.name, platform.release())
         self.host = "localhost"
@@ -31,13 +35,15 @@ class Thread (threading.Thread):
         self.success = False
         self.time = 0
         self.path = "/"
+        self.headers = {}
 
     def run(self):
         try:
             console.print("Request {}: GET on {}".format(self.n, self.path))
             now = time.time()
-            c = http.client.HTTPConnection(self.host, self.port, timeout = 10)
-            c.request(method="GET", url=self.path)
+            self.headers["User-Agent"] = self.user_agent
+            c = http.client.HTTPConnection(self.host, self.port,timeout = 1)
+            c.request(method="GET", url=self.path,headers=self.headers)
             res = c.getresponse()
             processed = round((time.time() - now) * 1000)
             self.print_result(res.status, res.reason, processed)
@@ -76,6 +82,12 @@ def startParallel(thread):
     for t in thread:
         t.start()
         active.append(t)
+        k = get_available_threads()
+        if(len(active) >= k):
+            for s in active:
+                if s.is_alive():
+                    s.join()
+                active.clear()
     for s in active:
         if s.is_alive():
             s.join()
