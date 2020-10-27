@@ -137,6 +137,8 @@ def parse_GET_Request(headers, cli, method=""):
         if (method == "HEAD"):
             # res = generateResponse(length, 200, resource, lastModified, ctype,"HEAD")
             res = generateGET(reqParams)
+            # print(res)
+            logger.generate(headers[0],res)
             print(res)
             return res, ""
 
@@ -156,7 +158,10 @@ def parse_GET_Request(headers, cli, method=""):
             if (e == params['If-None-Match']):
                 reqParams['code'] = 304
                 reqParams['length'] = 0
-                return generateGET(reqParams), ""
+                res = generateGET(reqParams)
+                print(res)
+                logger.generate(headers[0],res)
+                return res, ""
                 # return generateResponse(0, 304, resource, lastModified, ctype),""
 
         #Successfull Content Encoding
