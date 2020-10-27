@@ -82,10 +82,14 @@ def parse_GET_Request(headers, cli, method=""):
             ctype = i
             break
     length = 0
+    try:
+        k = params['Accept']
+    except:
+        k = "*/*"
     if (ctype == ""):
         reqParams = {
             'code': 406,
-            'ctype': params['Accept'],
+            'ctype': k,
             'length': 0,
             'etag': ''
         }

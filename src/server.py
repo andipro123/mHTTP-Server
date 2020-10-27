@@ -69,7 +69,7 @@ def getConnection(data):
 
 # Runs a thread that accepts connections on the same socket and closes the TCP connection when socket times out
 def accept_client(clientsocket, client_addr):
-    # print('Started the Thread')
+    print('Started the Thread')
     clientsocket.settimeout(10)
     port = list(client_addr)[1]
     hostip = list(client_addr)[0]

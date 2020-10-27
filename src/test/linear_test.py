@@ -9,7 +9,7 @@ import ssl
 from rich.console import Console
 
 port = sys.argv[1]
-n = sys.argv[2]
+n = int(sys.argv[2])
 order = 'parallel'
 try:
     order = sys.argv[3]
@@ -18,36 +18,26 @@ except:
 
 
 
-console = None
+console = Console(highlight=False)
 
 class Thread (threading.Thread):
-    def __init__(self, options, n, version):
+    def __init__(self, port, n):
+        print("Started new thread")
         threading.Thread.__init__(self)
-        self.user_agent = "PyStressTest/{}({} {} {})".format(version, platform.system(), os.name, platform.release())
-        self.host = options.host
-        self.port = options.port
-        self.path = options.path
-        self.timeout = options.timeout
+        self.user_agent = "StressTester({} {} {})".format(platform.system(), os.name, platform.release())
+        self.host = "localhost"
+        self.port = port
         self.n = n
-        self.allow_ssl = options.allow_ssl
-        self.self_signed = options.self_signed
-        self.headers = options.headers
         self.success = False
         self.time = 0
+        self.path = "/"
 
     def run(self):
         try:
             console.print("Request {}: GET on {}".format(self.n, self.path))
             now = time.time()
-            if self.allow_ssl:
-                if self.self_signed:
-                    c = http.client.HTTPSConnection(self.host, self.port, timeout=self.timeout, key_file=None, cert_file=None, context=ssl._create_unverified_context())
-                else:
-                    c = http.client.HTTPSConnection(self.host, self.port, timeout=self.timeout, key_file=None, cert_file=None)
-            else:
-                c = http.client.HTTPConnection(self.host, self.port, timeout=self.timeout)
-            self.headers["User-Agent"] = self.user_agent
-            c.request(method="GET", url=self.path, headers=self.headers)
+            c = http.client.HTTPConnection(self.host, self.port, timeout = 10)
+            c.request(method="GET", url=self.path)
             res = c.getresponse()
             processed = round((time.time() - now) * 1000)
             self.print_result(res.status, res.reason, processed)
@@ -94,10 +84,19 @@ def startParallel(thread):
 
 def startTest():
     t = []
+    success = 0
     for i in range(n):
-        t.append(Thread(port,n,order,i))
+        t.append(Thread(port,i))
     if(order == 'serial'):
         startSerial(t)
     else:
         startParallel(t)
+    for i in t:
+        if i.is_succeeded():
+            success += 1
+    console.print("Success: {}\nFailures: {}\n".format(success, n - success))
+    # startSerial(t)
+    # startParallel(t)
 
+if __name__ == "__main__":
+    startTest()

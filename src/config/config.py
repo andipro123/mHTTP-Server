@@ -10,7 +10,7 @@ TIMEOUT = 500
 PORT = 5000
 
 #Maximum number of conncetions supported simulataneously
-MAX_CONNECTIONS = 3
+MAX_CONNECTIONS = 300
 
 #Access Log File directory
 LOG_FILE = str(pathlib.Path().absolute()) + '/logs/access_log.txt'
