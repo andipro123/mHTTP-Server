@@ -159,9 +159,8 @@ def parse_GET_Request(headers, cli, method=""):
                 reqParams['code'] = 304
                 reqParams['length'] = 0
                 res = generateGET(reqParams)
-                print(res)
                 logger.generate(headers[0],res)
-                return res, ""
+                # return res, ""
                 # return generateResponse(0, 304, resource, lastModified, ctype),""
 
         #Successfull Content Encoding
