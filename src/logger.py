@@ -1,9 +1,10 @@
 # Get this from the config file
-logPath = './logs/access_log.txt'
-
 #  "%h %l %u %t \"%r\" %>s %b"
 # Format of the log files:
 # [time] req rescode length
+from config.config import LOG_FILE
+
+logPath = LOG_FILE
 
 
 #TODO
