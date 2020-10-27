@@ -2,6 +2,7 @@ from time import sleep
 import socket
 import sys
 import threading
+import time
 import os
 import pathlib
 from response import generateResponse
@@ -19,10 +20,11 @@ from methods.delete import parse_DELETE_Request
 from methods.post import parse_POST_Request
 # from methods.put import parse_PUT_Request
 # from getconfig import getconfig
-
+from config.config import DOCUMENT_ROOT, MAX_CONNECTIONS, PORT
 # Ideally get this from the config file
 # config = getconfig()
-documentRoot = str(pathlib.Path().absolute()) + "/assets/"
+# documentRoot = str(pathlib.Path().absolute()) + "/assets/"
+documentRoot = DOCUMENT_ROOT
 method = ""
 logger = Logger()
 
@@ -112,13 +114,19 @@ def stopserver(signal, frame):
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, stopserver)
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(('', int(sys.argv[1])))
+    s.bind(('', PORT))
     s.listen(90)
-    print("Listening on port {}".format(sys.argv[1]))
+    print("Listening on port {}".format(PORT))
     while 1:
         clientsocket, client_addr = s.accept()
-        threading.Thread(target=accept_client,
-                         args=(
-                             clientsocket,
-                             client_addr,
-                         )).start()
+        t = threading.Thread(target=accept_client,
+                             args=(
+                                 clientsocket,
+                                 client_addr,
+                             ))
+        t.start()
+        if threading.active_count() > MAX_CONNECTIONS:
+            t.join()
+            time.sleep(5)
+
+        print(threading.active_count())
