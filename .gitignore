@@ -3,4 +3,5 @@ src/utils/__pycache__
 src/methods/__pycache__
 resources/rfc2616.pdf
 src/logs
+src/.tmp.txt
 # src/assets
