@@ -29,6 +29,21 @@ class UnitTest:
         console.print(table)
 
 
+    def MultipleMethods(self):
+        # methods = ['get','head','post','put']
+        data = {
+            'name' : 'UnitTest1.0'
+        }
+        r = requests.get(self.url)
+        self.printResult(r,200)
+        r = requests.post(self.url,data = data)
+        self.printResult(r,200)
+        r = requests.head(self.url)
+        self.printResult(r,200)
+        # r = requests.put(self.url,data = data)
+        # self.printResult(r,200)
+        
+    
     def TestGET(self):
         url = ['test.pdf', 'test.png', 'test.html','login.html','File', 'test']
         for i in url:
@@ -37,6 +52,43 @@ class UnitTest:
                 self.printResult(r,404)
             else:
                 self.printResult(r,200)
+            console.print('Body Length: ',len(r.text))
+        r = requests.get(self.url, headers = {'Content-Encoding' : 'NotExistent'})
+        self.printResult(r,415)
+        console.print('Body Length: ',len(r.text))
+
+    
+    def TestQ(self):
+        #Q parameter to request for specific data types
+        #Based on the values mentioned for each type the highest value will be returned if available
+        #If no matching value is requested then send 406
+        types = {
+            'application/pdf' : 0.3,
+            'image/png' : 0.4,
+            'ai/ai': 1.0
+        }
+        s = ''
+        for k in types.keys():
+            s += k + ';q={}'.format(types[k]) + ',' 
+        r = requests.get(self.url + 'test', headers = {'Accept' : s})
+        console.print('Testing variable accpet type according to priority')
+        if(r.status_code == 406):
+            self.printResult(r,406)
+        else:
+            self.printResult(r,200)
+        console.print('Body Length:', len(r.text))
+
+    def TestHEAD(self):
+        url = ['test.pdf', 'test.png', 'test.html','login.html','File', 'test']
+        for i in url:
+            r = requests.head(self.url + i)
+            if(r.status_code == 404):
+                self.printResult(r,404)
+            else:
+                self.printResult(r,200)
+            console.print('Body Length: ',len(r.text))
+
+    
 
     def TestBadAccept(self,Atype = "test/html"):
         r = requests.get(self.url, headers = {'Accept' : Atype})
@@ -64,4 +116,7 @@ if __name__ == "__main__":
     Tester = UnitTest()
     # Tester.TestConditionalGET()
     # Tester.TestBadAccept()
-    Tester.TestGET()
+    # Tester.TestHEAD()
+    # Tester.TestGET()
+    Tester.TestQ()
+    # Tester.MultipleMethods()
