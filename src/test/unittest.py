@@ -71,7 +71,7 @@ class UnitTest:
         for k in types.keys():
             s += k + ';q={}'.format(types[k]) + ',' 
         r = requests.get(self.url + 'test', headers = {'Accept' : s})
-        console.print('Testing variable accpet type according to priority')
+        console.print('Testing variable accept type according to priority')
         if(r.status_code == 406):
             self.printResult(r,406)
         else:

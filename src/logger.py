@@ -33,10 +33,10 @@ class Logger():
 
         log = "{} [{}] \"{}\" {} {}\n".format(self.client_addr[0],datestr, req[:len(req) - 1], code,
                                            params['Content-Length'])
-        # self.lock.acquire()
+        self.lock.acquire()
         logFile.write(log)
         logFile.close()
-        # self.lock.release()
+        self.lock.release()
 
     def generatePOST(self, data):
         file = open('./logs/post_log.txt', "a")

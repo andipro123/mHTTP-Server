@@ -21,9 +21,6 @@ from methods.post import parse_POST_Request
 # from methods.put import parse_PUT_Request
 # from getconfig import getconfig
 from config.config import DOCUMENT_ROOT, MAX_CONNECTIONS, PORT
-# Ideally get this from the config file
-# config = getconfig()
-# documentRoot = str(pathlib.Path().absolute()) + "/assets/"
 documentRoot = DOCUMENT_ROOT
 method = ""
 logger = Logger()
@@ -73,13 +70,11 @@ def accept_client(clientsocket, client_addr):
     clientsocket.settimeout(10)
     port = list(client_addr)[1]
     hostip = list(client_addr)[0]
-    # print("Served from port ", port)
     while 1:
         try:
             data = clientsocket.recv(5000)
             if (not data):
                 break
-            # print(data)
             data = data.decode('utf-8')
             method = data.split('\n')[0].split(' ')[0]
             if (method == "GET" or method == "HEAD" or method == "POST"):
@@ -99,10 +94,8 @@ def accept_client(clientsocket, client_addr):
                 clientsocket.close()
                 break
         except socket.timeout:
-            # print('Closing connection')
             clientsocket.close()
             break
-    # print('Ended the Thread')
     return
 
 
@@ -116,6 +109,7 @@ if __name__ == "__main__":
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind(('', PORT))
     s.listen(90)
+    threadArray = []
     print("Listening on port {}".format(PORT))
     while 1:
         clientsocket, client_addr = s.accept()
@@ -125,8 +119,11 @@ if __name__ == "__main__":
                                  client_addr,
                              ))
         t.start()
+        threadArray.append(t)
         if threading.active_count() > MAX_CONNECTIONS:
             t.join()
             time.sleep(5)
 
         print(threading.active_count())
+    for i in threadArray:
+        i.join()
