@@ -8,6 +8,7 @@ import pathlib
 from utils.mediaTypes import mediaTypes
 import random
 import gzip, zlib
+from datetime import *
 # import brotli
 
 documentRoot = str(pathlib.Path().absolute()) + "/assets/"
@@ -21,6 +22,11 @@ def getExtension(mediaTypes):
         f[mediaTypes[k]] = k
     return f
 
+
+
+def millis(dt):
+    epoch = datetime.utcfromtimestamp(0)
+    return (dt - epoch).total_seconds()
 
 def generateEtag(time, length):
     return str(int(time)) + str(length)
@@ -166,6 +172,25 @@ def parse_GET_Request(headers, cli, method=""):
                 logger.generate(headers[0],res)
                 # return res, ""
                 # return generateResponse(0, 304, resource, lastModified, ctype),""
+        # if ('If-Modified-Since' in params.keys()):
+        #     # print(datetime(params['If-Modified-Since']))
+        #     months = {
+        #         'Jan' : 1,  'Feb' : 2,  'Mar' : 3, 'Apr' : 4,  'May' :5, 'Jun' : 6,
+        #         'Jul' : 7,  'Aug' : 8, 'Sep' : 9, 'Oct' : 10,'Nov' : 11,  'Dec' : 12
+        #     }
+        #     l = params['If-Modified-Since'][5:].split(' ')
+        #     timeString = l[3].split(':')
+        #     hours, minutes, seconds = int(timeString[0]), int(timeString[1]), int(timeString[2])
+        #     day, month, year  = int(l[0]), months[l[1]], int(l[2])
+        #     time = datetime(year,month, day, hours, minutes, seconds)
+        #     timeMillis = millis(time)
+        #     print(lastModified, timeMillis)
+        #     if(lastModified > timeMillis):
+        #         reqParams['code'] = 304
+        #         reqParams['length'] = 0
+        #         res = generateGET(reqParams)
+        #         logger.generate(headers[0],res)
+            
 
         #Successfull Content Encoding
         if ('Content-Encoding' in params.keys()):
