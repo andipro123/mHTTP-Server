@@ -239,9 +239,16 @@ def parse_GET_Request(headers, cli, method=""):
         if ('Accept-Ranges' in params.keys()):
             k = int(params['Accept-Ranges'])
             resRange = resource[:k]
-            res = res[:len(res) -
-                      2] + 'Accept-Ranges: {}'.format(k) + '\r\n\r\n'
+            newres = ''
+            for i in res.split('\r\n'):
+                if ('Content-Length' in i):
+                    continue
+                else:
+                    newres += i + '\r\n'
+            newres = newres[:len(newres) -
+                      4] + 'Accept-Ranges: {}\r\n'.format(k) + 'Content-Length: {}'.format(k) + '\r\n\r\n'
             resource = resRange
+            res = newres
 
         logger.generate(headers[0], res)
         print(res)
