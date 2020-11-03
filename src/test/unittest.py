@@ -28,6 +28,7 @@ class UnitTest:
     def __init__(self):
         self.port = sys.argv[1]
         self.url = "http://localhost:{}/".format(self.port)
+        # self.url = "http://34.237.242.80:5002/"
         self.lock = threading.Lock()
  
     def printResult(self, r, expectedCode):
@@ -47,17 +48,27 @@ class UnitTest:
     def TestMultipleMethods(self):
         # methods = ['get','head','post','put']
         data = {
-            'name' : 'UnitTest1.0'
+            'name' : 'UnitTest1.0',
+            'tester': 'dev1'
         }
-        # r = requests.get(self.url)
-        # self.printResult(r,200)
-        # r = requests.post(self.url,data = data)
-        # self.printResult(r,200)
-        # r = requests.head(self.url)
-        # self.printResult(r,200)
+        console.print('[cyan]Testing GET')
+        r = requests.get(self.url)
+        self.printResult(r,200)
+
+        console.print('[cyan]Testing POST')
+        r = requests.post(self.url,data = data)
+        self.printResult(r,200)
+
+        console.print('[cyan]Testing HEAD')
+        r = requests.head(self.url)
+        self.printResult(r,200)
+
+        console.print('[cyan]Testing PUT')
         r = requests.put(self.url,data = data)
         self.printResult(r,200)
         
+        r = requests.delete(self.url + 'deleteme.txt')
+        self.printResult(r,204)
     
     def TestGET(self):
         url = ['test.pdf', 'test.png', 'test.html','login.html','File', 'test']
@@ -144,6 +155,10 @@ class UnitTest:
             r = requests.get(url, headers = {'If-None-Match' : etag})
         self.printResult(r,304)
 
+    def TESTdelete(self):
+        r = requests.delete(self.url + 'deleteme.txt')
+        self.printResult(r,204)
+
 if __name__ == "__main__":
     Tester = UnitTest()
     console = Console()
@@ -152,20 +167,23 @@ if __name__ == "__main__":
     #     Tester.TestHEAD()
     for i in options:
         if(i == '-g'):
-            console.print('[red]Testing GET method')
+            console.print('[cyan]Testing GET method')
             Tester.TestGET()
         if(i == '-cg'):
-            console.print('[red]Testing Conditional GET method')
+            console.print('[cyan]Testing Conditional GET method')
             Tester.TestConditionalGET()
         if(i == '-q'):
-            console.print('[red]Testing Q method')
+            console.print('[cyan]Testing Q method')
             Tester.TestQ()
         if(i == '-m'):
-            console.print('[red]Testing Multiple Methods')
+            console.print('[cyan]Testing Multiple Methods')
             Tester.TestMultipleMethods()
         if(i == '-h'):
-            console.print('[red]Testing Head Method')
+            console.print('[cyan]Testing Head Method')
             Tester.TestHEAD()
+        if(i == '-d'):
+            console.print('[cyan]Testing Delete Method')
+            Tester.TESTdelete()
         # if(i == '-gocrazy'):
         #     console.print('[red]Do a random test to crash this server :) ')
         #     Tester.TestMega()

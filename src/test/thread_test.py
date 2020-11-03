@@ -30,6 +30,10 @@ if __name__ == "__main__":
     while (n):
         client_thread = threading.Thread(target=send_request,
                                         args=['http://127.0.0.1:{}'.format(port),n])
+
+        # client_thread = threading.Thread(target=send_request,
+        #                                 args=['http://34.237.242.80:5000/',n])
+                                        
         client_thread.start()
         threadArray.append(client_thread)
         n = n - 1

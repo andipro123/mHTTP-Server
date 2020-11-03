@@ -17,7 +17,7 @@ def getTime(offset = 0):
 def metaData(code):
     date = getTime()
     statusLine = "HTTP/1.1 {} {}\r\n".format(code, codes[code])
-    responseheaders = "Server: mHTTP-Alpha1\r\n"
+    responseheaders = "Server: mHTTP-Beta0\r\n"
     return date, statusLine + responseheaders
 
 def setCookie():
