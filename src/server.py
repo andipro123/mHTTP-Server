@@ -18,7 +18,7 @@ from methods.get import parse_GET_Request
 from methods.head import parse_HEAD_Request
 from methods.delete import parse_DELETE_Request
 from methods.post import parse_POST_Request
-# from methods.put import parse_PUT_Request
+from methods.put import parse_PUT_Request
 # from getconfig import getconfig
 from config.config import DOCUMENT_ROOT, MAX_CONNECTIONS, PORT
 documentRoot = DOCUMENT_ROOT

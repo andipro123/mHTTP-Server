@@ -61,7 +61,7 @@ def generateGET(headers):
     return response + entityheaders
 
 
-def generateResponse(length,code,resource=None,lastModified=None,ctype="text/html;charset=UTF-8",method="",encoding="gzip",etag="changelater"):
+def generateResponse(length,code,resource=None,lastModified=None,ctype="text/html;charset=UTF-8",method="",encoding="gzip"):
     if (code not in codes.keys()):
         return
     
@@ -72,9 +72,6 @@ def generateResponse(length,code,resource=None,lastModified=None,ctype="text/htm
     #     ctype = ctype
     # print(ctype)
 
-    entityheaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: {}\r\nConnection: keep-alive\r\nAllow: {}\r\nE-Tag: {}\r\n\r\n".format(
-        ctype, date, length, entityHeaders['Allow'],etag)
-    if(etag == ''):
-        #remove the etag header
-        pass
+    entityheaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: 0\r\nConnection: keep-alive\r\nAllow: {}\r\n\r\n".format(
+        ctype, date, length, entityHeaders['Allow'])
     return response + entityheaders

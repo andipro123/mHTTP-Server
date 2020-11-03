@@ -56,13 +56,16 @@ def parse_POST_Request(headers, cli, raw=None):
     form_data = parse_body(content_type, body, 'POST', headers)
     logger.generatePOST(str(form_data) + '\n')
 
-    # print('FORMDATA:', form_data)
+    print('FORMDATA:', form_data)
     # print(form_data['filename'])
-    if (form_data['isFile']):
-        f = open(path + form_data['filename'], 'wb')
-        # print(raw[:-46][-form_data['filesize']:])
-        header_length = form_data['header_length']
-        f.write(raw[:-46][header_length + 1:])
+    if ('isFile' in form_data.keys() and form_data['isFile']):
+        try:
+            f = open(path + form_data['filename'], 'wb')
+            # print(raw[:-46][-form_data['filesize']:])
+            header_length = form_data['header_length']
+            f.write(raw[:-46][header_length + 1:])
+        except:
+            pass
 
     res = generateResponse(len(body[0]), response_code, body[0], None)
     print(res)

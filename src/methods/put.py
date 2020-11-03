@@ -1,9 +1,11 @@
 import os
+import sys
+sys.path.append(os.path.abspath(os.path.join('..')))
+from response import *
+from logger import Logger
 import pathlib
-from ..response import generateResponse
-from ..logger import Logger
-from ..parsers import *
-from ..utils import mediaTypes
+from parsers import *
+from utils import mediaTypes
 
 documentRoot = str(pathlib.Path().absolute()) + "/assets/"
 logger = Logger()
@@ -23,7 +25,7 @@ def parse_PUT_Request(headers, cli):
 
     body = []
     params, body = parse_headers(headers)
-    path = headers[0].split('')[1]
+    path = headers[0].split(' ')[1]
 
     if path == '/':
         pass

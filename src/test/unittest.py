@@ -44,19 +44,19 @@ class UnitTest:
         table.add_row(r.request.method,str(r.status_code),r.reason,result)
         console.print(table)
 
-    def MultipleMethods(self):
+    def TestMultipleMethods(self):
         # methods = ['get','head','post','put']
         data = {
             'name' : 'UnitTest1.0'
         }
-        r = requests.get(self.url)
-        self.printResult(r,200)
-        r = requests.post(self.url,data = data)
-        self.printResult(r,200)
-        r = requests.head(self.url)
-        self.printResult(r,200)
-        # r = requests.put(self.url,data = data)
+        # r = requests.get(self.url)
         # self.printResult(r,200)
+        # r = requests.post(self.url,data = data)
+        # self.printResult(r,200)
+        # r = requests.head(self.url)
+        # self.printResult(r,200)
+        r = requests.put(self.url,data = data)
+        self.printResult(r,200)
         
     
     def TestGET(self):
@@ -150,7 +150,6 @@ if __name__ == "__main__":
     # if options == []:
     #     Tester.TestGET()
     #     Tester.TestHEAD()
-    Tester.TestRange()
     for i in options:
         if(i == '-g'):
             console.print('[red]Testing GET method')
