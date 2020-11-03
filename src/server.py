@@ -29,7 +29,7 @@ method = ""
 logger = Logger()
 
 
-def process(data, client_addr):
+def process(data, client_addr, raw=None):
 
     try:
         global method
@@ -40,7 +40,7 @@ def process(data, client_addr):
         if (method == 'GET'):
             return parse_GET_Request(headers, client_addr)
         elif (method == 'POST'):
-            return parse_POST_Request(headers, client_addr)
+            return parse_POST_Request(headers, client_addr, raw)
         elif (method == 'PUT'):
             return parse_PUT_Request(headers, client_addr)
         elif (method == 'HEAD'):
@@ -76,14 +76,21 @@ def accept_client(clientsocket, client_addr):
     # print("Served from port ", port)
     while 1:
         try:
-            data = clientsocket.recv(5000)
-            if (not data):
+            data_raw = clientsocket.recv(10485760)
+            # print(data_raw)
+            # print('raw', len(data_raw))
+
+            if (not data_raw):
                 break
-            # print(data)
-            data = data.decode('utf-8')
+            data = data_raw.decode('ISO-8859-1')
+            # print('decoded', len(data))
+
+            # ff = open('temp', 'w+b')
+            # ff.write(data_raw)
+            # print('raw: ', data)
             method = data.split('\n')[0].split(' ')[0]
             if (method == "GET" or method == "HEAD" or method == "POST"):
-                res, resource = process(data, client_addr)
+                res, resource = process(data, client_addr, data_raw)
             else:
                 res = process(data, client_addr)
             clientsocket.send(res.encode('utf-8'))

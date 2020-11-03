@@ -3,6 +3,7 @@ def parse_headers(data):
     params = {}
     body = []
 
+    # print(data)
     for line in data[1:]:
 
         if ':' in line:
@@ -21,13 +22,13 @@ def parse_headers(data):
     return (params, body)
 
 
-def parse_body(enctype, body, type):
+def parse_body(enctype, body, type, data):
 
     if type == 'POST':
         form_data = {}
 
         if "application/x-www-form-urlencoded" in enctype:
-            print(body)
+            # print(body)
             for line in body:
                 line = line.split('&')
                 for param in line:
@@ -39,26 +40,36 @@ def parse_body(enctype, body, type):
             key = ''
             value = ''
             form_data['isFile'] = False
+            # print(body)
             # print(boundary)
             for line in body[1:]:
-
                 if '----' in line:
                     form_data[key] = value
                     key = ''
                     value = ''
                 elif 'Content-Disposition: form-data' in line:
+                    if 'filename=' in line:
+                        filename = line[line.index('ename="') + 7:-2]
+                        form_data['filename'] = filename
                     key = line[line.index('=') + 2:-2]
                     value = body[body.index(line) + 2][:-1]
 
                 elif 'Content-Type' in line:
                     form_data['isFile'] = True
-                    form_data['filedata'] = body[body.index(line) + 2]
+                    x = data.index(line)
+                    header_string = "\n".join(data[:x + 2])
+                    # form_data['filedata'] = "\n".join(
+                    #     body[body.index(line) + 2:][:-3]) + "\n"
+
+                    form_data['header_length'] = len(header_string)
+
+                    # print(form_data['filedata'].encode('ISO-8859-1'))
                 else:
                     pass
 
             # ----WebKitFormBoundarySv3nVnTn1MpFWg2P
             # ------WebKitFormBoundarySv3nVnTn1MpFWg2P\r
-        # print(form_data)
+            # print(len(form_data['filedata']))
         return form_data
 
     elif type == 'PUT':
@@ -81,7 +92,12 @@ def parse_body(enctype, body, type):
 
             elif 'Content-Type' in line:
                 form_data['isFile'] = True
-                form_data['filedata'] = body[body.index(line) + 2]
+                x = data.index(line)
+                header_string = "\n".join(data[:x + 2])
+                # form_data['filedata'] = "\n".join(
+                #     body[body.index(line) + 2:][:-3]) + "\n"
+
+                form_data['header_length'] = len(header_string)
             else:
                 pass
         # print(form_data)
