@@ -3,7 +3,7 @@
 # Format of the log files:
 # [time] req rescode length
 from config.config import LOG_FILE
-
+import threading
 logPath = LOG_FILE
 
 
@@ -11,7 +11,7 @@ logPath = LOG_FILE
 # Add the host ip to the request
 class Logger():
     def __init__(self):
-        pass
+        self.lock = threading.Lock()
 
     client_addr = ''
 
@@ -31,10 +31,12 @@ class Logger():
         datestr = date[1] + '/' + date[2] + '/' + date[3] + ':' + date[
             4] + " " + date[5]
 
-        log = "[{}] \"{}\" {} {}\n".format(datestr, req[:len(req) - 1], code,
+        log = "{} [{}] \"{}\" {} {}\n".format(self.client_addr[0],datestr, req[:len(req) - 1], code,
                                            params['Content-Length'])
+        self.lock.acquire()
         logFile.write(log)
         logFile.close()
+        self.lock.release()
 
     def generatePOST(self, data):
         file = open('./logs/post_log.txt', "a")

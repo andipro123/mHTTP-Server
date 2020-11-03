@@ -8,6 +8,7 @@ import pathlib
 from utils.mediaTypes import mediaTypes
 import random
 import gzip, zlib
+from datetime import *
 # import brotli
 
 documentRoot = str(pathlib.Path().absolute()) + "/assets/"
@@ -21,6 +22,11 @@ def getExtension(mediaTypes):
         f[mediaTypes[k]] = k
     return f
 
+
+
+def millis(dt):
+    epoch = datetime.utcfromtimestamp(0)
+    return (dt - epoch).total_seconds()
 
 def generateEtag(time, length):
     return str(int(time)) + str(length)
@@ -82,10 +88,14 @@ def parse_GET_Request(headers, cli, method=""):
             ctype = i
             break
     length = 0
+    try:
+        k = params['Accept']
+    except:
+        k = "*/*"
     if (ctype == ""):
         reqParams = {
             'code': 406,
-            'ctype': params['Accept'],
+            'ctype': k,
             'length': 0,
             'etag': ''
         }
@@ -137,6 +147,8 @@ def parse_GET_Request(headers, cli, method=""):
         if (method == "HEAD"):
             # res = generateResponse(length, 200, resource, lastModified, ctype,"HEAD")
             res = generateGET(reqParams)
+            # print(res)
+            logger.generate(headers[0],res)
             print(res)
             return res, ""
 
@@ -156,8 +168,29 @@ def parse_GET_Request(headers, cli, method=""):
             if (e == params['If-None-Match']):
                 reqParams['code'] = 304
                 reqParams['length'] = 0
-                return generateGET(reqParams), ""
+                res = generateGET(reqParams)
+                logger.generate(headers[0],res)
+                # return res, ""
                 # return generateResponse(0, 304, resource, lastModified, ctype),""
+        # if ('If-Modified-Since' in params.keys()):
+        #     # print(datetime(params['If-Modified-Since']))
+        #     months = {
+        #         'Jan' : 1,  'Feb' : 2,  'Mar' : 3, 'Apr' : 4,  'May' :5, 'Jun' : 6,
+        #         'Jul' : 7,  'Aug' : 8, 'Sep' : 9, 'Oct' : 10,'Nov' : 11,  'Dec' : 12
+        #     }
+        #     l = params['If-Modified-Since'][5:].split(' ')
+        #     timeString = l[3].split(':')
+        #     hours, minutes, seconds = int(timeString[0]), int(timeString[1]), int(timeString[2])
+        #     day, month, year  = int(l[0]), months[l[1]], int(l[2])
+        #     time = datetime(year,month, day, hours, minutes, seconds)
+        #     timeMillis = millis(time)
+        #     print(lastModified, timeMillis)
+        #     if(lastModified > timeMillis):
+        #         reqParams['code'] = 304
+        #         reqParams['length'] = 0
+        #         res = generateGET(reqParams)
+        #         logger.generate(headers[0],res)
+            
 
         #Successfull Content Encoding
         if ('Content-Encoding' in params.keys()):
@@ -206,9 +239,16 @@ def parse_GET_Request(headers, cli, method=""):
         if ('Accept-Ranges' in params.keys()):
             k = int(params['Accept-Ranges'])
             resRange = resource[:k]
-            res = res[:len(res) -
-                      2] + 'Accept-Ranges: {}'.format(k) + '\r\n\r\n'
+            newres = ''
+            for i in res.split('\r\n'):
+                if ('Content-Length' in i):
+                    continue
+                else:
+                    newres += i + '\r\n'
+            newres = newres[:len(newres) -
+                      4] + 'Accept-Ranges: {}\r\n'.format(k) + 'Content-Length: {}'.format(k) + '\r\n\r\n'
             resource = resRange
+            res = newres
 
         logger.generate(headers[0], res)
         print(res)
