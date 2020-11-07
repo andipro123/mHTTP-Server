@@ -7,7 +7,7 @@ DOCUMENT_ROOT = str(pathlib.Path().absolute()) + '/assets/'
 TIMEOUT = 500
 
 #Default port number
-PORT = 5002
+PORT = 5000
 
 #Maximum number of conncetions supported simulataneously
 MAX_CONNECTIONS = 3000

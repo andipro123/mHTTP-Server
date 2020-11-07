@@ -113,25 +113,30 @@ def stopserver(signal, frame):
 
 
 if __name__ == "__main__":
-    signal.signal(signal.SIGINT, stopserver)
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(('', PORT))
-    s.listen(90)
-    threadArray = []
-    print("Listening on port {}".format(PORT))
-    while 1:
-        clientsocket, client_addr = s.accept()
-        t = threading.Thread(target=accept_client,
-                             args=(
-                                 clientsocket,
-                                 client_addr,
-                             ))
-        t.start()
-        threadArray.append(t)
-        if threading.active_count() > MAX_CONNECTIONS:
-            t.join()
-            time.sleep(5)
+    try:
+        signal.signal(signal.SIGINT, stopserver)
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.bind(('', PORT))
+        s.listen(90)
+        threadArray = []
+        print("Listening on port {}".format(PORT))
+        while 1:
+            clientsocket, client_addr = s.accept()
+            t = threading.Thread(target=accept_client,
+                                args=(
+                                    clientsocket,
+                                    client_addr,
+                                ))
+            t.start()
+            threadArray.append(t)
+            if threading.active_count() > MAX_CONNECTIONS:
+                t.join()
+                time.sleep(5)
 
-        print(threading.active_count())
-    for i in threadArray:
-        i.join()
+            print(threading.active_count())
+        for i in threadArray:
+            i.join()
+    except Exception as e:
+        print('Internal Error')
+        logger.ServerError(e)
+        sys.exit(1)

@@ -4,7 +4,10 @@
 # [time] req rescode length
 from config.config import LOG_FILE
 import threading
+import pytz
+from datetime import datetime, timedelta
 logPath = LOG_FILE
+
 
 
 #TODO
@@ -65,3 +68,13 @@ class Logger():
 
         file.write(log)
         file.close()
+
+    def ServerError(self,e):
+        offset = 0
+        date = datetime.now(tz=pytz.utc) + timedelta(seconds = offset)
+        time = " {}:{}:{} GMT".format(date.strftime("%H"), date.strftime("%M"),date.strftime("%S"))
+        date = date.strftime("%a") + ', ' + str(date.strftime("%d")) + " " + date.strftime("%b") + " " + str(date.year) + time
+
+        file = open('./logs/error_log.txt', "a")
+        file.write(f"[{date}] {e}\n")
+        file.close
