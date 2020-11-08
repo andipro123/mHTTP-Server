@@ -80,6 +80,8 @@ def parse_GET_Request(headers, cli, method=""):
             extension ='.' + path.split('.')[1]
             if(extension != '.html'):
                 f = getExtension(mediaTypes)
+                if(extension  == ".min"):
+                    extension = ".js"
                 ctype = f[extension]
         
     for i in par:
