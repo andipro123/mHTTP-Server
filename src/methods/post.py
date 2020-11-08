@@ -1,12 +1,14 @@
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join('..')))
+sys.path.append(os.path.abspath(os.path.join('config')))
 from response import *
 from logger import Logger
 import pathlib
-from parsers import *
+from utils.parser import *
+from config.config import DOCUMENT_ROOT
 
-documentRoot = str(pathlib.Path().absolute()) + "/assets/"
+documentRoot = DOCUMENT_ROOT
 logger = Logger()
 
 
@@ -18,16 +20,11 @@ def parse_POST_Request(headers, cli, raw=None):
     # Extending a database through an append operation.
 
     # For the purpose of the project, POST methods will write the incoming data into a logs file
-    resource = ''
-    f = ''
     logger.client_addr = cli
     resource_len = len(raw)
 
-    body = []
-    params, body = parse_headers(headers)
-    # print('BODYYYYY: ', body[12:]))
+    params, body = Parser.parse_headers(headers, 'POST')
     path = headers[0].split(' ')[1]
-    # print(params)
     if (path == "/"):
         path = documentRoot
     else:
@@ -35,38 +32,29 @@ def parse_POST_Request(headers, cli, raw=None):
 
     # Check if file at path is write-able else respond with FORBIDDEN response
     if os.path.exists(path):
-        if os.access(path, os.W_OK):
-            # f = open(path, 'wb')
-            response_code = 200
-        else:
-            response_code = 403
+        # f = open(path, 'wb')
+        response_code = 204
     else:
         # f = open(path, 'wb')
         response_code = 201
 
-    if (response_code == 403):
-        res = generateResponse(0, 403)
-        logger.generateError(headers[0], res)
-        return res
+    # if (response_code == 403):
+    #     res = generateResponse(0, 403)
+    #     logger.generateError(headers[0], res)
+    #     return res
 
     # Handle application/x-www-form-urlencoded type of data
     content_type = params['Content-Type']
-    # print(content_type)
 
-    form_data = parse_body(content_type, body, 'POST', headers)
-    logger.generatePOST(str(form_data) + '\n')
+    form_data = Parser.parse_body(content_type, body, 'POST', headers)
 
-    print('FORMDATA:', form_data)
-    # print(form_data['filename'])
     if ('isFile' in form_data.keys() and form_data['isFile']):
-        try:
-            f = open(path + form_data['filename'], 'wb')
-            # print(raw[:-46][-form_data['filesize']:])
-            header_length = form_data['header_length']
-            f.write(raw[:-46][header_length + 1:])
-        except:
-            pass
+
+        header_length = form_data['header_length']
+        form_data['filedata'] = str(raw[:-46][header_length + 1:])
 
     res = generateResponse(len(body[0]), response_code, body[0], None)
+    logger.generate(headers[0], res)
+    logger.generatePOST(form_data, headers[0], params, response_code)
     print(res)
     return (res, "")
