@@ -47,9 +47,9 @@ def process(data, client_addr, raw=None):
         else:
             logger.generateError(501)
             return generateResponse(0, 501)
-    except:
-        error = sys.exc_info()[0]
-        print(error.with_traceback())
+    except Exception as e:
+        print(e)
+        logger.generateError(400)
         return generateResponse(0, 400)
 
 
