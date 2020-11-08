@@ -4,6 +4,7 @@ from rich import box
 from rich.console import Console
 from rich.table import Table
 import threading
+import pathlib
 
 console = Console(highlight=False)
 
@@ -37,7 +38,7 @@ class UnitTest:
         table.add_column("Message", style="blue")
         table.add_column("Test Result")
         code = r.status_code
-        if (code == expectedCode):
+        if (code in expectedCode):
             result = '[green]Success'
         else:
             result = '[red]Failed'
@@ -49,22 +50,22 @@ class UnitTest:
         data = {'name': 'UnitTest1.0', 'tester': 'dev1'}
         console.print('[cyan]Testing GET')
         r = requests.get(self.url)
-        self.printResult(r, 200)
+        self.printResult(r, set([200]))
 
         console.print('[cyan]Testing POST')
         r = requests.post(self.url, data=data)
-        self.printResult(r, 200)
+        self.printResult(r, set([204, 201, 200]))
 
         console.print('[cyan]Testing HEAD')
         r = requests.head(self.url)
-        self.printResult(r, 200)
+        self.printResult(r, set([200]))
 
         console.print('[cyan]Testing PUT')
         r = requests.put(self.url, data=data)
-        self.printResult(r, 204)
+        self.printResult(r, set([204, 201, 200]))
 
         r = requests.delete(self.url + 'deleteme.txt')
-        self.printResult(r, 204)
+        self.printResult(r, set([204]))
 
     def TestGET(self):
         url = [
@@ -73,9 +74,9 @@ class UnitTest:
         for i in url:
             r = requests.get(self.url + i)
             if (r.status_code == 404):
-                self.printResult(r, 404)
+                self.printResult(r, set([404]))
             else:
-                self.printResult(r, 200)
+                self.printResult(r, set([200]))
             console.print('Body Length: ', len(r.text))
 
         self.TestBadCType()
@@ -86,7 +87,7 @@ class UnitTest:
     def TestBadCType(self):
         console.print("[red]Testing Non Existing content type")
         r = requests.get(self.url, headers={'Content-Encoding': 'NotExistent'})
-        self.printResult(r, 415)
+        self.printResult(r, set([415]))
         console.print('Body Length: ', len(r.text))
 
     def TestQ(self):
@@ -101,15 +102,15 @@ class UnitTest:
         console.print(
             '[red]Testing variable accept type according to priority')
         if (r.status_code == 406):
-            self.printResult(r, 406)
+            self.printResult(r, set([406]))
         else:
-            self.printResult(r, 200)
+            self.printResult(r, set([200]))
         console.print('Body Length:', len(r.text))
 
     def TestBadAccept(self, Atype="test/html"):
         console.print('[red]Testing a wrong Accept Type')
         r = requests.get(self.url, headers={'Accept': Atype})
-        self.printResult(r, 406)
+        self.printResult(r, set([406]))
 
     def TestHEAD(self):
         url = [
@@ -118,9 +119,9 @@ class UnitTest:
         for i in url:
             r = requests.head(self.url + i)
             if (r.status_code == 404):
-                self.printResult(r, 404)
+                self.printResult(r, set([404]))
             else:
-                self.printResult(r, 200)
+                self.printResult(r, set([200]))
             console.print('Body Length: ', len(r.text))
 
     def TestRange(self):
@@ -131,7 +132,7 @@ class UnitTest:
         r2 = requests.get(self.url,
                           headers={'Accept-Ranges': str(length - 10)})
         console.print(f"Content Length received : {len(r2.text)}")
-        self.printResult(r2, 200)
+        self.printResult(r2, set([200]))
 
     # Expected to fetch the Etag from the server and send this in the next request.
     # Returns 304 if the resource is not modified
@@ -140,7 +141,7 @@ class UnitTest:
         url = self.url + "test.pdf"
         console.print("Getting metadata about the resource.")
         r = requests.head(url)
-        self.printResult(r, 200)
+        self.printResult(r, set([200]))
         console.print("Checking if the resource is modified.")
         if (etag == ""):
             try:
@@ -150,11 +151,31 @@ class UnitTest:
                 return
         else:
             r = requests.get(url, headers={'If-None-Match': etag})
-        self.printResult(r, 304)
+        self.printResult(r, set([304]))
 
     def TESTdelete(self):
         r = requests.delete(self.url + 'deleteme.txt')
-        self.printResult(r, 204)
+        self.printResult(r, set([200, 204]))
+
+    def TestPost(self):
+        console.print('[red]Testing form data')
+        payload = {"name": "aniket", "surname": "jayateerth", "age": 31}
+        r = requests.post(self.url, data=payload)
+        self.printResult(r, set([200, 201, 204]))
+
+        console.print('[red]Testing file upload')
+        payload = {"name": "aniket", "surname": "jayateerth", "age": 31}
+        files = {
+            'test': open(str(pathlib.Path().absolute()) + '/../test.py', 'rb')
+        }
+        r = requests.post(self.url, data=payload, files=files)
+        self.printResult(r, set([200, 201, 204]))
+
+    def TestPut(self):
+        path = str(pathlib.Path().absolute()) + '/../test.py'
+        file = open(path, 'rb')
+        r = requests.put(self.url + 'test.py', files={'test.py': file})
+        self.printResult(r, set([200, 201, 204]))
 
 
 if __name__ == "__main__":
@@ -182,6 +203,12 @@ if __name__ == "__main__":
         if (i == '-d'):
             console.print('[cyan]Testing Delete Method')
             Tester.TESTdelete()
+        if (i == '-p'):
+            console.print('[cyan]Testing Post Method')
+            Tester.TestPost()
+        if (i == '-pt'):
+            console.print('[cyan]Testing Put Method')
+            Tester.TestPut()
         # if(i == '-gocrazy'):
         #     console.print('[red]Do a random test to crash this server :) ')
         #     Tester.TestMega()

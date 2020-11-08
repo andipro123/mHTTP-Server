@@ -6,6 +6,7 @@ class Parser:
         if method == 'POST':
             params = {}
             body = []
+            boundary = ''
 
             for line in data[1:]:
 
@@ -13,8 +14,10 @@ class Parser:
                     headerField = line[:line.index(':')]
                     params[headerField] = line[line.index(':') + 2:len(line) -
                                                1]
+                elif 'boundary' in line:
+                    boundary = line[-1:line.index('=') + 1]
 
-                elif '------' in line:
+                elif '--' + boundary in line:
                     i = data.index(line)
                     body = data[i:]
                     return (params, body)
@@ -58,7 +61,6 @@ class Parser:
                 key = ''
                 value = ''
                 form_data['isFile'] = False
-                # print(body)
                 # print(boundary)
                 for line in body[1:]:
                     if '----' in line:
@@ -67,13 +69,17 @@ class Parser:
                         value = ''
                     elif 'Content-Disposition: form-data' in line:
                         if 'filename=' in line:
+                            form_data['isFile'] = True
                             filename = line[line.index('ename="') + 7:-2]
+                            x = data.index(line)
+                            header_string = "\n".join(data[:x + 2])
+                            form_data['header_length'] = len(header_string)
                             if filename != "":
                                 form_data['filename'] = filename
                         key = line[line.index('=') + 2:-2]
                         value = body[body.index(line) + 2][:-1]
 
-                    elif 'Content-Type' in line:
+                    elif 'Content-Type' in line or 'filename' in line:
                         form_data['isFile'] = True
                         x = data.index(line)
                         header_string = "\n".join(data[:x + 2])

@@ -22,8 +22,8 @@ def parse_POST_Request(headers, cli, raw=None):
     # For the purpose of the project, POST methods will write the incoming data into a logs file
     logger.client_addr = cli
     resource_len = len(raw)
-
     params, body = Parser.parse_headers(headers, 'POST')
+    print(headers)
     path = headers[0].split(' ')[1]
     if (path == "/"):
         path = documentRoot

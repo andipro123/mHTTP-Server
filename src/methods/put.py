@@ -20,7 +20,7 @@ def parse_PUT_Request(headers, cli, raw=None):
     # URI refers to an already existing resource, the enclosed
     # entity SHOULD be considered as a modified version of the
     # one residing on the origin server.
-
+    print(raw)
     resource = ''
     f = ''
     logger.client_addr = cli
@@ -40,7 +40,7 @@ def parse_PUT_Request(headers, cli, raw=None):
             response_code = 204
         else:
             response_code = 403
-            res = generateResponse(0, response_code, body[0])
+            res = generateResponse(0, response_code, headers[0])
             print(res)
             logger.generateError(headers[0], res)
             return (res, "")
@@ -48,7 +48,6 @@ def parse_PUT_Request(headers, cli, raw=None):
         f1 = open(path, 'wb')
         response_code = 201
 
-    content_type = params['Content-Type']
     header_length = len("\n".join(headers[:params['index']]))
 
     # print(header_length)

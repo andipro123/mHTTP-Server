@@ -72,7 +72,7 @@ def accept_client(clientsocket, client_addr):
     while 1:
         try:
             data_raw = clientsocket.recv(10485760)
-            # print(data_raw)
+            print(data_raw)
             # print('raw', len(data_raw))
 
             if (not data_raw):
@@ -84,7 +84,8 @@ def accept_client(clientsocket, client_addr):
             # ff.write(data_raw)
             # print('raw: ', data)
             method = data.split('\n')[0].split(' ')[0]
-            if (method == "GET" or method == "HEAD" or method == "PUT"):
+            if (method == "GET" or method == "HEAD" or method == "PUT"
+                    or method == "POST"):
                 res, resource = process(data, client_addr, data_raw)
             else:
                 res = process(data, client_addr)
