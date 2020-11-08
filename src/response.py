@@ -36,7 +36,6 @@ def setCookie():
     # f.write(cookie + ":" + user + '\n')
     # f.close()
     cookieHeader =  "Set-Cookie: cID={}; Expires={}; Path={};Domain = {};\r\n".format(cookie, Expires,Path, Domain)
-    print(cookieHeader)
     return cookieHeader
 
 
@@ -51,7 +50,6 @@ def generateGET(headers):
     if(etag != ''):
         if('Cookie' not in headers.keys()):
             entityheaders += setCookie()
-            print(entityheaders)
         entityheaders += 'E-Tag: {}\r\n\r\n'.format(headers['etag'])
     else:
         if('Cookie' not in headers.keys()):

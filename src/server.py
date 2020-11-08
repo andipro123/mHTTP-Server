@@ -94,8 +94,9 @@ def accept_client(clientsocket, client_addr):
                 try:
                     if (len(resource)):
                         clientsocket.send(resource)
-                except e:
-                    print(e)
+                except Exception as e:
+                    # print(e)
+                    logger.ServerError(e)
                     pass
             conntype = getConnection(data)
             if (conntype == "close"):
@@ -133,7 +134,7 @@ if __name__ == "__main__":
                 t.join()
                 time.sleep(5)
 
-            print(threading.active_count())
+            # print(threading.active_count())
         for i in threadArray:
             i.join()
     except Exception as e:

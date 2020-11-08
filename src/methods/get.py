@@ -116,8 +116,9 @@ def parse_GET_Request(headers, cli, method=""):
                 except:
                     extension = '.' + ctype.split('/')[1]
                 path = documentRoot + path
-            except e:
-                print("Exceptions", e)
+            except Exception as e:
+                # print("Exceptions", e)
+                logger.ServerError(e)
                 for i in par:
                     if (os.path.exists(documentRoot + i)):
                         ctype = i
