@@ -9,7 +9,6 @@ from response import generateResponse
 from utils.mediaTypes import mediaTypes
 from utils.entityHeaders import entityHeaders
 from logger import Logger
-import parsers
 import signal
 sys.path.append(os.path.abspath(os.path.join('methods')))
 sys.path.append(os.path.abspath(os.path.join('config')))
@@ -39,7 +38,7 @@ def process(data, client_addr, raw=None):
         elif (method == 'POST'):
             return parse_POST_Request(headers, client_addr, raw)
         elif (method == 'PUT'):
-            return parse_PUT_Request(headers, client_addr)
+            return parse_PUT_Request(headers, client_addr, raw)
         elif (method == 'HEAD'):
             return parse_HEAD_Request(headers, client_addr)
         elif (method == 'DELETE'):
@@ -73,7 +72,7 @@ def accept_client(clientsocket, client_addr):
     while 1:
         try:
             data_raw = clientsocket.recv(10485760)
-            # print(data_raw)
+            print(data_raw)
             # print('raw', len(data_raw))
 
             if (not data_raw):
@@ -85,7 +84,8 @@ def accept_client(clientsocket, client_addr):
             # ff.write(data_raw)
             # print('raw: ', data)
             method = data.split('\n')[0].split(' ')[0]
-            if (method == "GET" or method == "HEAD" or method == "POST"):
+            if (method == "GET" or method == "HEAD" or method == "PUT"
+                    or method == "POST"):
                 res, resource = process(data, client_addr, data_raw)
             else:
                 res = process(data, client_addr)
@@ -124,10 +124,10 @@ if __name__ == "__main__":
         while 1:
             clientsocket, client_addr = s.accept()
             t = threading.Thread(target=accept_client,
-                                args=(
-                                    clientsocket,
-                                    client_addr,
-                                ))
+                                 args=(
+                                     clientsocket,
+                                     client_addr,
+                                 ))
             t.start()
             threadArray.append(t)
             if threading.active_count() > MAX_CONNECTIONS:

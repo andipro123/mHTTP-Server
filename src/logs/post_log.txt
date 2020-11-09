@@ -1,121 +1,146 @@
-{'name': 'UnitTest1.0'}
-{'name': 'UnitTest1.0'}
-{'name': 'UnitTest1.0', 'tester': 'dev1'}
-{'name': 'UnitTest1.0', 'tester': 'dev1'}
-{'name': 'UnitTest1.0', 'tester': 'dev1'}
-{'name': 'UnitTest1.0', 'tester': 'dev1'}
-{'name': 'UnitTest1.0', 'tester': 'dev1'}
-{'name': 'UnitTest1.0', 'tester': 'dev1'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'foo': 'bar'}
-{'name': 'Anup', 'email': 'test%40ts.com', 'message': 'Hello'}
+127.0.0.1 [Sun, 08 Nov 2020 12:55:53 IST] "POST / HTTP/1.1" 204 3311
+{
+    "isFile": true,
+    "name": "anup",
+    "surname": "nair",
+    "filename": "8_QueensProblem.ipynb",
+    "header_length": 1094,
+    "filename\"; filename=\"8_QueensProblem.ipynb": "",
+    "filedata": "b'{\\n \"cells\": [\\n  {\\n   \"cell_type\": \"code\",\\n   \"execution_count\": 3,\\n   \"metadata\": {},\\n   \"outputs\": [],\\n   \"source\": [\\n    \"from constraint import *\"\\n   ]\\n  },\\n  {\\n   \"cell_type\": \"code\",\\n   \"execution_count\": 4,\\n   \"metadata\": {},\\n   \"outputs\": [],\\n   \"source\": [\\n    \"problem = Problem()\"\\n   ]\\n  },\\n  {\\n   \"cell_type\": \"code\",\\n   \"execution_count\": 5,\\n   \"metadata\": {},\\n   \"outputs\": [],\\n   \"source\": [\\n    \"size = 8\"\\n   ]\\n  },\\n  {\\n   \"cell_type\": \"code\",\\n   \"execution_count\": 6,\\n   \"metadata\": {},\\n   \"outputs\": [],\\n   \"source\": [\\n    \"cols = range(1, size+1)\\\\n\",\\n    \"rows = range(1, size+1)\"\\n   ]\\n  },\\n  {\\n   \"cell_type\": \"code\",\\n   \"execution_count\": 7,\\n   \"metadata\": {},\\n   \"outputs\": [],\\n   \"source\": [\\n    \"problem.addVariables(cols, rows)\"\\n   ]\\n  },\\n  {\\n   \"cell_type\": \"code\",\\n   \"execution_count\": 10,\\n   \"metadata\": {},\\n   \"outputs\": [],\\n   \"source\": [\\n    \"for i in cols:\\\\n\",\\n    \"    for j in cols:\\\\n\",\\n    \"        if i < j:\\\\n\",\\n    \"            problem.addConstraint(lambda r1, r2, i=i, j=j:\\\\n\",\\n    \"                                 abs(r1-r2) != abs(i-j) and\\\\n\",\\n    \"                                 r1 != r2, (i, j))\"\\n   ]\\n  },\\n  {\\n   \"cell_type\": \"code\",\\n   \"execution_count\": 11,\\n   \"metadata\": {},\\n   \"outputs\": [],\\n   \"source\": [\\n    \"sol = problem.getSolution()\"\\n   ]\\n  },\\n  {\\n   \"cell_type\": \"code\",\\n   \"execution_count\": 13,\\n   \"metadata\": {},\\n   \"outputs\": [],\\n   \"source\": [\\n    \"mat = [[0 for _ in range(8)] for __ in range(8)]\"\\n   ]\\n  },\\n  {\\n   \"cell_type\": \"code\",\\n   \"execution_count\": 24,\\n   \"metadata\": {},\\n   \"outputs\": [],\\n   \"source\": [\\n    \"for i in range(8):\\\\n\",\\n    \"    j = sol[i+1]\\\\n\",\\n    \"    mat[i][j-1] = 1\"\\n   ]\\n  },\\n  {\\n   \"cell_type\": \"markdown\",\\n   \"metadata\": {},\\n   \"source\": [\\n    \"# 1 represents a queen\"\\n   ]\\n  },\\n  {\\n   \"cell_type\": \"code\",\\n   \"execution_count\": 22,\\n   \"metadata\": {},\\n   \"outputs\": [\\n    {\\n     \"data\": {\\n      \"text/plain\": [\\n       \"[[0, 0, 0, 0, 0, 0, 0, 1],\\\\n\",\\n       \" [0, 0, 0, 1, 0, 0, 0, 1],\\\\n\",\\n       \" [1, 0, 0, 1, 0, 0, 0, 0],\\\\n\",\\n       \" [1, 0, 1, 0, 0, 0, 0, 0],\\\\n\",\\n       \" [0, 0, 1, 0, 0, 1, 0, 0],\\\\n\",\\n       \" [0, 1, 0, 0, 0, 1, 0, 0],\\\\n\",\\n       \" [0, 1, 0, 0, 0, 0, 1, 0],\\\\n\",\\n       \" [0, 0, 0, 0, 1, 0, 1, 0]]\"\\n      ]\\n     },\\n     \"execution_count\": 22,\\n     \"metadata\": {},\\n     \"output_type\": \"execute_result\"\\n    }\\n   ],\\n   \"source\": [\\n    \"mat\"\\n   ]\\n  },\\n  {\\n   \"cell_type\": \"code\",\\n   \"execution_count\": null,\\n   \"metadata\": {},\\n   \"outputs\": [],\\n   \"source\": []\\n  }\\n ],\\n \"metadata\": {\\n  \"kernelspec\": {\\n   \"display_name\": \"Python 3\",\\n   \"language\": \"python\",\\n   \"name\": \"python3\"\\n  },\\n  \"language_info\": {\\n   \"codemirror_mode\": {\\n    \"name\": \"ipython\",\\n    \"version\": 3\\n   },\\n   \"file_extension\": \".py\",\\n   \"mimetype\": \"text/x-python\",\\n   \"name\": \"python\",\\n   \"nbconvert_exporter\": \"python\",\\n   \"pygments_lexer\": \"ipython3\",\\n   \"version\": \"3.7.4\"\\n  }\\n },\\n \"nbformat\": 4,\\n \"nbformat_minor\": 2\\n}\\n'"
+}
+127.0.0.1 [Sun, 08 Nov 2020 21:56:04 IST] "POST / HTTP/1.1" 204 37
+{
+    "name": "aniket",
+    "surname": "jayateerth",
+    "age": "31"
+}
+127.0.0.1 [Sun, 08 Nov 2020 21:58:14 IST] "POST / HTTP/1.1" 204 37
+{
+    "name": "aniket",
+    "surname": "jayateerth",
+    "age": "31"
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:21:53 IST] "POST / HTTP/1.1" 204 37
+{
+    "name": "aniket",
+    "surname": "jayateerth",
+    "age": "31"
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:21:53 IST] "POST / HTTP/1.1" 204 418
+{
+    "isFile": false
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:22:50 IST] "POST / HTTP/1.1" 204 37
+{
+    "name": "aniket",
+    "surname": "jayateerth",
+    "age": "31"
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:22:50 IST] "POST / HTTP/1.1" 204 418
+{
+    "isFile": false
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:24:56 IST] "POST / HTTP/1.1" 204 37
+{
+    "name": "aniket",
+    "surname": "jayateerth",
+    "age": "31"
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:24:56 IST] "POST / HTTP/1.1" 204 418
+{
+    "isFile": false
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:26:15 IST] "POST / HTTP/1.1" 204 37
+{
+    "name": "aniket",
+    "surname": "jayateerth",
+    "age": "31"
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:26:15 IST] "POST / HTTP/1.1" 204 418
+{
+    "isFile": false
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:28:47 IST] "POST / HTTP/1.1" 204 37
+{
+    "name": "aniket",
+    "surname": "jayateerth",
+    "age": "31"
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:28:48 IST] "POST / HTTP/1.1" 204 418
+{
+    "isFile": false
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:29:14 IST] "POST / HTTP/1.1" 204 37
+{
+    "name": "aniket",
+    "surname": "jayateerth",
+    "age": "31"
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:29:14 IST] "POST / HTTP/1.1" 204 418
+{
+    "isFile": false
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:35:53 IST] "POST / HTTP/1.1" 204 37
+{
+    "name": "aniket",
+    "surname": "jayateerth",
+    "age": "31"
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:35:54 IST] "POST / HTTP/1.1" 204 418
+{
+    "isFile": false,
+    "filename": "test.py"
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:39:48 IST] "POST / HTTP/1.1" 204 37
+{
+    "name": "aniket",
+    "surname": "jayateerth",
+    "age": "31"
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:40:30 IST] "POST / HTTP/1.1" 204 37
+{
+    "name": "aniket",
+    "surname": "jayateerth",
+    "age": "31"
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:40:46 IST] "POST / HTTP/1.1" 204 37
+{
+    "name": "aniket",
+    "surname": "jayateerth",
+    "age": "31"
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:41:03 IST] "POST / HTTP/1.1" 204 37
+{
+    "name": "aniket",
+    "surname": "jayateerth",
+    "age": "31"
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:41:22 IST] "POST / HTTP/1.1" 204 37
+{
+    "name": "aniket",
+    "surname": "jayateerth",
+    "age": "31"
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:43:04 IST] "POST / HTTP/1.1" 204 37
+{
+    "name": "aniket",
+    "surname": "jayateerth",
+    "age": "31"
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:43:04 IST] "POST / HTTP/1.1" 204 418
+{
+    "isFile": true,
+    "header_length": 622,
+    "filename": "test.py",
+    "filedata": "b''"
+}
+127.0.0.1 [Sun, 08 Nov 2020 22:45:53 IST] "POST / HTTP/1.1" 204 923
+{
+    "isFile": true,
+    "name": "anup",
+    "surname": "nair",
+    "header_length": 1069,
+    "filename": "group_4.txt",
+    "filename\"; filename=\"group_4.txt": "",
+    "filedata": "b'Group - 4\\r\\nCountry - France\\r\\nGroup Members:\\r\\n1) Isha Birla 111807005\\r\\n2) Soham Parekh 111803137\\r\\n3) Mugdha Bapat 111803041\\r\\n4) Advait Dixit  111807010\\r\\n5) Rishabh Agarwal 111807069\\r\\n6) Anshika Varshney 111809051\\r\\n7) Rashi Rupchandani 111807080\\r\\n8) Gautami Kharat 111814016\\r\\n9) Aniket Jayateerth 111809044\\r\\n10) Amol lilhare-111810051\\r\\n\\r\\nLink to video: https://coepac-my.sharepoint.com/:v:/g/personal/jayateerthaa18_comp_coep_ac_in/EbJwjNQAkWtEt6DiVUK-pTIBF_znQmcypO5Mm7inlWRyjA?e=CFybh3\\r\\n\\r\\n**(Might have to login to Outlook account to view)**'"
+}
