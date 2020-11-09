@@ -41,12 +41,12 @@ def parse_DELETE_Request(headers, cli):
         else:
             # Forbidden because delete permission not granted
             res = generateResponse(0, 403)
-            logger.generate(headers[0], res)
+            # logger.generate(headers[0], res)
             logger.generateError(headers[0], res)
             return res
 
     else:
         # File not found error
         res = generateResponse(0, 404)
-        logger.generate(headers[0], res)
+        logger.generateError(headers[0], res)
         return res

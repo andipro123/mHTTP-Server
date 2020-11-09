@@ -4,6 +4,7 @@
 # [time] req rescode length
 from config.config import LOG_FILE
 from config.config import LOG_FORMAT
+from config.config import LOG_LEVEL
 import threading
 import json
 import pytz
@@ -27,7 +28,6 @@ class Logger():
                 params[headerField] = i[i.index(':') + 2:len(i) - 1]
             except:
                 pass
-        print(req)
         code = res[0].split(' ')[1]
         date = params['Date'].split(' ')
         datestr = date[1] + '/' + date[2] + '/' + date[3] + ':' + date[
@@ -82,7 +82,6 @@ class Logger():
                 log += "{} ".format(code)
             elif (i == 'LENGTH'):
                 log += "{} ".format(params['Content-Length'])
-        print(log)
         if(log == ''):
             log = "{} [{}] \"{}\" {} {}\n".format(self.client_addr[0], datestr,
                                                   req[:len(req) - 1], code,
@@ -90,12 +89,14 @@ class Logger():
         
         form_data = json.dumps(data, indent=4)
         self.lock.acquire()
-        postLog.write(log)
+        postLog.write(log + '\n')
         postLog.write(form_data + '\n')
         postLog.close()
         self.lock.release()
 
     def generateError(self, req, res):
+        if(LOG_LEVEL == "-c"):
+            return
         file = open('./logs/error_log.txt', "a")
         res = res.split('\n')
         params = {}
@@ -129,10 +130,12 @@ class Logger():
                                                   req[:len(req) - 1], code,
                                                   params['Content-Length'])
 
-        file.write(log)
+        file.write(log + '\n')
         file.close()
 
     def ServerError(self, e):
+        if(LOG_LEVEL == '-r'):
+            return
         offset = 0
         date = datetime.now(tz=pytz.utc) + timedelta(seconds=offset)
         time = " {}:{}:{} GMT".format(date.strftime("%H"), date.strftime("%M"),
