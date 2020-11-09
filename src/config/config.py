@@ -21,7 +21,7 @@ LOG_FILE = str(pathlib.Path().absolute()) + '/logs/access_log.txt'
 #REQUEST => Show the requested asset and method
 #RESPONE => Show the response code and message
 #LENGTH => Show the length of the content served
-LOG_FORMAT = "CLIENT_IP [DATETIME] REQUEST RESPONSE"
+LOG_FORMAT = "CLIENT_IP [DATETIME] REQUEST RESPONSE LENGTH"
 
 #Log levels 
 #-c Critical System crashes
