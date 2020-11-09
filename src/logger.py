@@ -4,10 +4,10 @@
 # [time] req rescode length
 from config.config import LOG_FILE
 import threading
+import json
 import pytz
 from datetime import datetime, timedelta
 logPath = LOG_FILE
-
 
 
 #TODO
@@ -34,17 +34,34 @@ class Logger():
         datestr = date[1] + '/' + date[2] + '/' + date[3] + ':' + date[
             4] + " " + date[5]
 
-        log = "{} [{}] \"{}\" {} {}\n".format(self.client_addr[0],datestr, req[:len(req) - 1], code,
-                                           params['Content-Length'])
+        log = "{} [{}] \"{}\" {} {}\n".format(self.client_addr[0], datestr,
+                                              req[:len(req) - 1], code,
+                                              params['Content-Length'])
         self.lock.acquire()
         logFile.write(log)
         logFile.close()
         self.lock.release()
 
-    def generatePOST(self, data):
-        file = open('./logs/post_log.txt', "a")
-        file.write(str(data))
-        file.close()
+    def generatePOST(self, data, req, params, code):
+        postLog = open('./logs/post_log.txt', "a")
+        # log = req + res[0] + params['Date'] + '\n'
+        date = params.get('Date', None)
+        if date:
+            datestr = date[1] + '/' + date[2] + '/' + date[3] + ':' + date[
+                4] + " " + date[5]
+        else:
+            today = datetime.today()
+            datestr = today.strftime("%a, %d %b %Y %X IST")
+
+        log = "{} [{}] \"{}\" {} {}\n".format(self.client_addr[0], datestr,
+                                              req[:len(req) - 1], code,
+                                              params['Content-Length'])
+        form_data = json.dumps(data, indent=4)
+        self.lock.acquire()
+        postLog.write(log)
+        postLog.write(form_data + '\n')
+        postLog.close()
+        self.lock.release()
 
     def generateError(self, req, res):
         file = open('./logs/error_log.txt', "a")
@@ -69,11 +86,14 @@ class Logger():
         file.write(log)
         file.close()
 
-    def ServerError(self,e):
+    def ServerError(self, e):
         offset = 0
-        date = datetime.now(tz=pytz.utc) + timedelta(seconds = offset)
-        time = " {}:{}:{} GMT".format(date.strftime("%H"), date.strftime("%M"),date.strftime("%S"))
-        date = date.strftime("%a") + ', ' + str(date.strftime("%d")) + " " + date.strftime("%b") + " " + str(date.year) + time
+        date = datetime.now(tz=pytz.utc) + timedelta(seconds=offset)
+        time = " {}:{}:{} GMT".format(date.strftime("%H"), date.strftime("%M"),
+                                      date.strftime("%S"))
+        date = date.strftime("%a") + ', ' + str(
+            date.strftime("%d")) + " " + date.strftime("%b") + " " + str(
+                date.year) + time
 
         file = open('./logs/error_log.txt', "a")
         file.write(f"[{date}] {e}\n")

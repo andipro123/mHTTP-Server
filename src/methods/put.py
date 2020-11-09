@@ -1,30 +1,31 @@
 import os
 import sys
+import json
 sys.path.append(os.path.abspath(os.path.join('..')))
 from response import *
 from logger import Logger
 import pathlib
-from parsers import *
+from utils.parser import *
 from utils import mediaTypes
+from config.config import DOCUMENT_ROOT
 
-documentRoot = str(pathlib.Path().absolute()) + "/assets/"
+documentRoot = DOCUMENT_ROOT
 logger = Logger()
 
 
-def parse_PUT_Request(headers, cli):
+def parse_PUT_Request(headers, cli, raw=None):
     # TODO
     # The PUT method requests that the enclosed entity be stored
     # under the supplied Request-URI. If the Request-
     # URI refers to an already existing resource, the enclosed
     # entity SHOULD be considered as a modified version of the
     # one residing on the origin server.
-
+    print(raw)
     resource = ''
     f = ''
     logger.client_addr = cli
 
-    body = []
-    params, body = parse_headers(headers)
+    params, body = Parser.parse_headers(headers, 'PUT')
     path = headers[0].split(' ')[1]
 
     if path == '/':
@@ -35,23 +36,35 @@ def parse_PUT_Request(headers, cli):
     # check if the file exists already
     if os.path.exists(path):
         if os.access(path, os.W_OK):
-            f1 = open(path, 'w')
-            response_code = 200
+            f1 = open(path, 'wb')
+            response_code = 204
         else:
             response_code = 403
+            res = generateResponse(0, response_code, headers[0])
+            print(res)
+            logger.generateError(headers[0], res)
+            return (res, "")
     else:
-        f1 = open(path, 'w')
+        f1 = open(path, 'wb')
         response_code = 201
 
-    if response_code == 403:
-        res = generateResponse(0, 403)
-        logger.generateError(headers[0], res)
-        return res
+    header_length = len("\n".join(headers[:params['index']]))
 
-    content_type = params['Content-Type']
+    # print(header_length)
+    f1.write(raw[header_length + 1:])
 
-    body = parse_body(content_type, body, "PUT")
-    #logger
-    f1.write(body['filedata'])
+    # form_data = Parser.parse_body(content_type, body, "PUT", headers)
 
-    return generateResponse(0, response_code, body[0])
+    # if ('isFile' in form_data.keys() and form_data['isFile']):
+
+    #     header_length = form_data['header_length']
+    #     filedata = raw[:-46][header_length + 1:]
+    #     f1.write(filedata)
+
+    # else:
+    #     f1.write(json.dumps(form_data, indent=4).encode())
+
+    res = generateResponse(0, response_code, headers[0])
+    logger.generate(headers[0], res)
+    print(res)
+    return (res, "")
