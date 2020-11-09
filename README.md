@@ -83,7 +83,7 @@ These tests ensure the conformance of the basic functionalities and the correctn
 
 ```
 [cd src/test/]
-python3 unittest.py PORT-NO [options]
+python3 unitTest.py PORT-NO [options]
 ```
 
 ```
@@ -113,7 +113,7 @@ These tests check if the server can handle a large scale pool of network request
 
 ```
 [cd src/test/]
-python3 thread_test.py PORT-NO CONNECTIONS
+python3 stressTest.py PORT-NO CONNECTIONS
 ```
 
 Example:

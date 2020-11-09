@@ -1,0 +1,7 @@
+DELETE /req2.txt HTTP/1.1
+User-Agent: PostmanRuntime/7.26.5
+Accept: */*
+Postman-Token: 521580a5-c1e7-4dd3-b595-dde2199d0222
+Host: 127.0.0.1
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive

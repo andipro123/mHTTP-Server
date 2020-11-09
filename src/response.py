@@ -32,9 +32,6 @@ def setCookie():
     Expires = getTime(15)
     Path = "/login"
     Domain = ""  #Serves all hosts
-    # f = open('./test/data.txt', "a")
-    # f.write(cookie + ":" + user + '\n')
-    # f.close()
     cookieHeader =  "Set-Cookie: cID={}; Expires={}; Path={};Domain = {};\r\n".format(cookie, Expires,Path, Domain)
     return cookieHeader
 
@@ -54,8 +51,6 @@ def generateGET(headers):
     else:
         if('Cookie' not in headers.keys()):
             entityheaders += setCookie() + '\r\n'
-    # setCookie()
-    # print(entityheaders)
     return response + entityheaders
 
 
@@ -64,11 +59,6 @@ def generateResponse(length,code,resource=None,lastModified=None,ctype="text/htm
         return
     
     date , response = metaData(code)
-
-    # lastModified = datetime.datetime(int(lastModified))
-    # if(ctype != "text/html;charset=UTF-8"):
-    #     ctype = ctype
-    # print(ctype)
 
     entityheaders = "Content-Type: {}\r\nDate: {}\r\nContent-Length: 0\r\nConnection: keep-alive\r\nAllow: {}\r\n\r\n".format(
         ctype, date, length, entityHeaders['Allow'])

@@ -9,7 +9,6 @@ from utils.mediaTypes import mediaTypes
 import random
 import gzip, zlib
 from datetime import *
-# import brotli
 
 documentRoot = str(pathlib.Path().absolute()) + "/assets/"
 logger = Logger()
@@ -71,7 +70,6 @@ def parse_GET_Request(headers, cli, method=""):
 
     # Return 406 on not getting file with desired accept
     par = matchAccept()
-    # print(par)
     ctype = ""
     path = headers[0].split(' ')[1]
     if('*/*' in par or 'text/html' in par):
@@ -105,7 +103,6 @@ def parse_GET_Request(headers, cli, method=""):
         res = generateGET(reqParams)
         logger.generateError(headers[0], res)
         return res, ""
-    # print(ctype)
     try:
         if (path == "/"):
             path = documentRoot + 'index.html'
@@ -117,13 +114,11 @@ def parse_GET_Request(headers, cli, method=""):
                     extension = '.' + ctype.split('/')[1]
                 path = documentRoot + path
             except Exception as e:
-                # print("Exceptions", e)
                 logger.ServerError(e)
                 for i in par:
                     if (os.path.exists(documentRoot + i)):
                         ctype = i
                         break
-                # ctype = par[0]
         reqParams = {
             'length': 0,
             'code': 200,
@@ -133,7 +128,6 @@ def parse_GET_Request(headers, cli, method=""):
 
         if ('.' not in path.split('\n')[-1]):
             path += '.' + ctype.split('/')[1]
-        # print(path)
         f = open(path, "rb")
         resource = f.read()
         lastModified = os.path.getmtime(path)
@@ -148,9 +142,7 @@ def parse_GET_Request(headers, cli, method=""):
             reqParams['Cookie'] = params['Cookie']
 
         if (method == "HEAD"):
-            # res = generateResponse(length, 200, resource, lastModified, ctype,"HEAD")
             res = generateGET(reqParams)
-            # print(res)
             logger.generate(headers[0],res)
             print(res)
             return res, ""
@@ -163,18 +155,15 @@ def parse_GET_Request(headers, cli, method=""):
             logger.generateError(headers[0], res)
             return res, ""
         res = generateGET(reqParams)
-        # res = generateResponse(length, 200, resource, lastModified, ctype,Etag)
 
         if ('If-None-Match' in params.keys()):
-            # e = getEtag(f)
             e = Etag
             if (e == params['If-None-Match']):
                 reqParams['code'] = 304
                 reqParams['length'] = 0
                 res = generateGET(reqParams)
                 logger.generate(headers[0],res)
-                # return res, ""
-                # return generateResponse(0, 304, resource, lastModified, ctype),""
+
         # if ('If-Modified-Since' in params.keys()):
         #     # print(datetime(params['If-Modified-Since']))
         #     months = {
@@ -230,8 +219,6 @@ def parse_GET_Request(headers, cli, method=""):
                         continue
                     else:
                         newres += i + '\r\n'
-                #check
-                # resource = brotli.compress(resource)
                 newres = newres[:len(newres) -
                                 4] + 'Content-Length: {}\r\n'.format(
                                     len(resource)
@@ -254,16 +241,14 @@ def parse_GET_Request(headers, cli, method=""):
             res = newres
 
         logger.generate(headers[0], res)
-        print(res)
+        # print(res)
         f.close()
         return res, resource
 
     except FileNotFoundError:
         reqParams['code'] = 404
         reqParams['length'] = 0
-        # res = generateResponse(length, 404)
         res = generateGET(reqParams)
         logger.generate(headers[0], res)
         logger.generateError(headers[0], res)
-        # print(res)
         return res, ""
