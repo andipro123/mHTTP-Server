@@ -44,11 +44,11 @@ def process(data, client_addr, raw=None):
         elif (method == 'DELETE'):
             return parse_DELETE_Request(headers, client_addr)
         else:
-            logger.generateError(501)
+            logger.ServerError(501)
             return generateResponse(0, 501)
     except Exception as e:
         print(e)
-        logger.generateError(400)
+        logger.generateError(headers[0],400)
         return generateResponse(0, 400)
 
 
