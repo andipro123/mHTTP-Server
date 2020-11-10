@@ -13,7 +13,13 @@ PORT = 5002
 MAX_CONNECTIONS = 3000
 
 #Access Log File directory
-LOG_FILE = str(pathlib.Path().absolute()) + '/logs/access_log.txt'
+ACCESS_LOG = str(pathlib.Path().absolute()) + '/logs/access_log.txt'
+
+#Error Log File Directory
+ERROR_LOG = str(pathlib.Path().absolute()) + '/logs/error_log.txt'
+
+#POST Request logs
+POST_LOG = str(pathlib.Path().absolute()) + '/logs/post_log.txt'
 
 #Define the format as follows:
 #CLIENT_IP => Show to IP address of the client that has made the request
@@ -23,7 +29,7 @@ LOG_FILE = str(pathlib.Path().absolute()) + '/logs/access_log.txt'
 #LENGTH => Show the length of the content served
 LOG_FORMAT = "CLIENT_IP [DATETIME] REQUEST RESPONSE LENGTH"
 
-#Log levels 
+#Log levels
 #-c Critical System crashes
 #-r Request Errors
 #-all All errors
