@@ -18,7 +18,6 @@ from methods.head import parse_HEAD_Request
 from methods.delete import parse_DELETE_Request
 from methods.post import parse_POST_Request
 from methods.put import parse_PUT_Request
-# from getconfig import getconfig
 from config.config import DOCUMENT_ROOT, MAX_CONNECTIONS, PORT
 documentRoot = DOCUMENT_ROOT
 method = ""
@@ -44,11 +43,11 @@ def process(data, client_addr, raw=None):
         elif (method == 'DELETE'):
             return parse_DELETE_Request(headers, client_addr)
         else:
-            logger.generateError(501)
+            logger.ServerError(501)
             return generateResponse(0, 501)
-    except:
-        error = sys.exc_info()[0]
-        print(error.with_traceback())
+    except Exception as e:
+        print(e)
+        logger.generateError(headers[0],400)
         return generateResponse(0, 400)
 
 
@@ -65,14 +64,13 @@ def getConnection(data):
 
 # Runs a thread that accepts connections on the same socket and closes the TCP connection when socket times out
 def accept_client(clientsocket, client_addr):
-    # print('Started the Thread')
     clientsocket.settimeout(10)
     port = list(client_addr)[1]
     hostip = list(client_addr)[0]
     while 1:
         try:
             data_raw = clientsocket.recv(10485760)
-            print(data_raw)
+            # print(data_raw)
             # print('raw', len(data_raw))
 
             if (not data_raw):
@@ -94,8 +92,8 @@ def accept_client(clientsocket, client_addr):
                 try:
                     if (len(resource)):
                         clientsocket.send(resource)
-                except e:
-                    print(e)
+                except Exception as e:
+                    logger.ServerError(e)
                     pass
             conntype = getConnection(data)
             if (conntype == "close"):
@@ -133,9 +131,9 @@ if __name__ == "__main__":
                 t.join()
                 time.sleep(5)
 
-            print(threading.active_count())
         for i in threadArray:
             i.join()
+
     except Exception as e:
         print('Internal Error')
         logger.ServerError(e)

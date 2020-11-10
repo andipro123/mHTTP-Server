@@ -8,7 +8,7 @@ mediaTypes = {
     "image/vnd.microsoft.icon" : ".ico",
     "image/jpeg" : ".jpg",
     "image/aviff" : ".png",
-    "test/javascript" : ".js",
+    "application/javascript" : ".js",
     "application/json" : ".json",
     "audio/mpeg" : ".mp3",
     "video/mpeg" : ".mpeg",

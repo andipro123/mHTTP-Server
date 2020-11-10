@@ -94,7 +94,7 @@ class UnitTest:
         #Q parameter to request for specific data types
         #Based on the values mentioned for each type the highest value will be returned if available
         #If no matching value is requested then send 406
-        types = {'application/pdf': 0.3, 'image/png': 0.4, 'ai/ai': 1.0}
+        types = {'application/pdf': 0.8, 'image/png': 0.4, 'ai/ai': 1.0}
         s = ''
         for k in types.keys():
             s += k + ';q={}'.format(types[k]) + ','

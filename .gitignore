@@ -6,3 +6,5 @@ src/logs
 src/.tmp.txt
 venv
 # src/assets
+src/methods/__pycache__/post.cpython-36.pyc
+src/methods/__pycache__/put.cpython-36.pyc
