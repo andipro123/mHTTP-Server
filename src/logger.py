@@ -2,12 +2,14 @@
 #  "%h %l %u %t \"%r\" %>s %b"
 # Format of the log files:
 # [time] req rescode length
-from config.config import LOG_FILE
+from config.config import ACCESS_LOG, ERROR_LOG, POST_LOG
 import threading
 import json
 import pytz
 from datetime import datetime, timedelta
-logPath = LOG_FILE
+logPath = ACCESS_LOG
+postLog = POST_LOG
+errorLog = ERROR_LOG
 
 
 #TODO
@@ -43,7 +45,7 @@ class Logger():
         self.lock.release()
 
     def generatePOST(self, data, req, params, code):
-        postLog = open('./logs/post_log.txt', "a")
+        postFile = open(postLog, "a")
         # log = req + res[0] + params['Date'] + '\n'
         date = params.get('Date', None)
         if date:
@@ -58,13 +60,13 @@ class Logger():
                                               params['Content-Length'])
         form_data = json.dumps(data, indent=4)
         self.lock.acquire()
-        postLog.write(log)
-        postLog.write(form_data + '\n')
-        postLog.close()
+        postFile.write(log)
+        postFile.write(form_data + '\n')
+        postFile.close()
         self.lock.release()
 
     def generateError(self, req, res):
-        file = open('./logs/error_log.txt', "a")
+        file = open(errorLog, "a")
         res = res.split('\n')
         params = {}
         for i in res[1:]:
@@ -83,8 +85,10 @@ class Logger():
                                               req[:len(req) - 1], code,
                                               params['Content-Length'])
 
+        self.lock.acquire()
         file.write(log)
         file.close()
+        self.lock.release()
 
     def ServerError(self, e):
         offset = 0
@@ -95,6 +99,6 @@ class Logger():
             date.strftime("%d")) + " " + date.strftime("%b") + " " + str(
                 date.year) + time
 
-        file = open('./logs/error_log.txt', "a")
+        file = open(errorLog, "a")
         file.write(f"[{date}] {e}\n")
         file.close
