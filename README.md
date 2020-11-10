@@ -57,8 +57,11 @@ This will start the server on a default port of as mentioned in the configuratio
 2. DOCUMENT_ROOT = Specify the document root directory that will serve the requests
 3. MAX_CONNECTIONS = Specify the maximum number of simultaneous connections that the server will accept
 4. DEFAULT_TIMEOUT = Specify the Timeout value for the response
-5. LOG_FORMAT = Specify the format to write access logs from the server
-6. LOG_LEVEL = Specify the levels for error logs from the server
+5. ACCESS_LOG = Specify the file to save access logs
+6. ERROR_LOG = Specify the file to save error logs
+7. POST_LOG = Specify the file to save post logs
+8. LOG_FORMAT = Specify the format to write access logs from the server
+9. LOG_LEVEL = Specify the levels for error logs from the server
 ```
 
 Once the server starts, it will start a background process that serves connections from clients.
@@ -100,6 +103,7 @@ The options specifications for the test module:
 5. -d Test the DELETE method
 6. -cg Test the Conditional GET method
 7. -m Test a combination of the 5 methods
+8. -e Test with a malformed request
 8. -go-crazy Simulate a parallel combination of multiple methods
 ```
 

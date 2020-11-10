@@ -3,7 +3,6 @@
 # Format of the log files:
 # [time] req rescode length
 from config.config import ACCESS_LOG, ERROR_LOG, POST_LOG
-from config.config import LOG_FILE
 from config.config import LOG_FORMAT
 from config.config import LOG_LEVEL
 import threading
@@ -101,38 +100,41 @@ class Logger():
         if (LOG_LEVEL == "-c"):
             return
         file = open('./logs/error_log.txt', "a")
-        res = res.split('\n')
-        params = {}
-        for i in res[1:]:
-            try:
-                headerField = i[:i.index(':')]
-                params[headerField] = i[i.index(':') + 2:len(i) - 1]
-            except:
-                pass
-        code = res[0].split(' ')[1]
-        date = params['Date'].split(' ')
-        datestr = date[1] + '/' + date[2] + '/' + date[3] + ':' + date[
-            4] + " " + date[5]
+        try:
+            res = res.split('\n')
+            params = {}
+            for i in res[1:]:
+                try:
+                    headerField = i[:i.index(':')]
+                    params[headerField] = i[i.index(':') + 2:len(i) - 1]
+                except:
+                    pass
+            code = res[0].split(' ')[1]
+            date = params['Date'].split(' ')
+            datestr = date[1] + '/' + date[2] + '/' + date[3] + ':' + date[
+                4] + " " + date[5]
 
-        log = ''
-        for i in LOG_FORMAT.split(' '):
-            if (i == " "):
-                break
-            if (i == 'CLIENT_IP'):
-                log += self.client_addr[0] + ' '
-            elif (i == '[DATETIME]'):
-                log += f'[{datestr}] '
-            elif (i == 'REQUEST'):
-                log += f' \"{req[:len(req) - 1]}\" '
-            elif (i == 'RESPONSE'):
-                log += "{} ".format(code)
-            elif (i == 'LENGTH'):
-                log += "{} ".format(params['Content-Length'])
-        if (log == ''):
-            log = "{} [{}] \"{}\" {} {}\n".format(self.client_addr[0], datestr,
-                                                  req[:len(req) - 1], code,
-                                                  params['Content-Length'])
+            log = ''
+            for i in LOG_FORMAT.split(' '):
+                if (i == " "):
+                    break
+                if (i == 'CLIENT_IP'):
+                    log += self.client_addr[0] + ' '
+                elif (i == '[DATETIME]'):
+                    log += f'[{datestr}] '
+                elif (i == 'REQUEST'):
+                    log += f' \"{req[:len(req) - 1]}\" '
+                elif (i == 'RESPONSE'):
+                    log += "{} ".format(code)
+                elif (i == 'LENGTH'):
+                    log += "{} ".format(params['Content-Length'])
+            if (log == ''):
+                log = "{} [{}] \"{}\" {} {}\n".format(self.client_addr[0], datestr,
+                                                    req[:len(req) - 1], code,
+                                                    params['Content-Length'])
 
+        except :
+            log = f'Bad Request [{res}]'
         self.lock.acquire()
         file.write(log + '\n')
         file.close()
