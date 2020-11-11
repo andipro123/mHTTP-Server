@@ -466,11 +466,10 @@
 {
     "foo": "bar"
 }
-<<<<<<< HEAD
 127.0.0.1 [Wed, 11 Nov 2020 20:38:59 IST]  "POST /?name=aniket&surname=jayateerth HTTP/1.1" 201 0 {
     "name": "aniket",
     "surname": "jayateerth"
-=======
+}
 127.0.0.1 [Tue, 10 Nov 2020 17:34:54 IST]  "POST / HTTP/1.1" 204 28 {
     "name": "UnitTest1.0",
     "tester": "dev1"
@@ -1037,5 +1036,4 @@
 }
 127.0.0.1 [Wed, 11 Nov 2020 22:15:26 IST]  "POST / HTTP/1.1" 204 7 {
     "foo": "bar"
->>>>>>> 575b1b79940a4fe48219a0e617fe905ae60dbe0a
 }
