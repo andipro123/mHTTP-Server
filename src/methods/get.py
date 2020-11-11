@@ -185,8 +185,8 @@ def parse_GET_Request(headers, cli, method=""):
             
 
         #Successfull Content Encoding
-        if ('Content-Encoding' in params.keys()):
-            if (params['Content-Encoding'] == 'gzip'):
+        if ('Accept-Encoding' in params.keys()):
+            if (params['Accept-Encoding'] == 'gzip'):
                 newres = ''
                 for i in res.split('\r\n'):
                     if ('Content-Length' in i):
@@ -197,9 +197,9 @@ def parse_GET_Request(headers, cli, method=""):
                 newres = newres[:len(newres) -
                                 4] + 'Content-Length: {}\r\n'.format(
                                     len(resource)
-                                ) + 'Content-Encoding: gzip' + '\r\n\r\n'
+                                ) + 'Accept-Encoding: gzip' + '\r\n\r\n'
                 res = newres
-            elif (params['Content-Encoding'] == 'deflate'):
+            elif (params['Accept-Encoding'] == 'deflate'):
                 newres = ''
                 for i in res.split('\r\n'):
                     if ('Content-Length' in i):
@@ -210,9 +210,9 @@ def parse_GET_Request(headers, cli, method=""):
                 newres = newres[:len(newres) -
                                 4] + 'Content-Length: {}\r\n'.format(
                                     len(resource)
-                                ) + 'Content-Encoding: deflate' + '\r\n\r\n'
+                                ) + 'Accept-Encoding: deflate' + '\r\n\r\n'
                 res = newres
-            elif (params['Content-Encoding'] == 'br'):
+            elif (params['Accept-Encoding'] == 'br'):
                 newres = ''
                 for i in res.split('\r\n'):
                     if ('Content-Length' in i):
@@ -222,7 +222,7 @@ def parse_GET_Request(headers, cli, method=""):
                 newres = newres[:len(newres) -
                                 4] + 'Content-Length: {}\r\n'.format(
                                     len(resource)
-                                ) + 'Content-Encoding: br' + '\r\n\r\n'
+                                ) + 'Accept-Encoding: br' + '\r\n\r\n'
                 res = newres
 
         #Check at end

@@ -88,7 +88,7 @@ class UnitTest:
 
     def TestBadCType(self):
         console.print("[red]Testing Non Existing content type")
-        r = requests.get(self.url, headers={'Content-Encoding': 'NotExistent'})
+        r = requests.get(self.url, headers={'Accept-Encoding': 'NotExistent'})
         self.printResult(r, set([415]))
         console.print('Body Length: ', len(r.text))
 
