@@ -5,6 +5,7 @@ from rich.console import Console
 from rich.table import Table
 import threading
 import pathlib
+import socket
 
 console = Console(highlight=False)
 
@@ -14,6 +15,7 @@ console = Console(highlight=False)
 # -pt from PUT
 # -d for delete
 # -cg for conditional get
+# -e for errors
 
 options = []
 k = len(sys.argv)
@@ -62,10 +64,10 @@ class UnitTest:
 
         console.print('[cyan]Testing PUT')
         r = requests.put(self.url, data=data)
-        self.printResult(r, set([204, 201, 200]))
+        self.printResult(r, set([204, 201, 200, 403]))
 
         r = requests.delete(self.url + 'deleteme.txt')
-        self.printResult(r, set([204]))
+        self.printResult(r, set([204,404]))
 
     def TestGET(self):
         url = [
@@ -86,7 +88,7 @@ class UnitTest:
 
     def TestBadCType(self):
         console.print("[red]Testing Non Existing content type")
-        r = requests.get(self.url, headers={'Content-Encoding': 'NotExistent'})
+        r = requests.get(self.url, headers={'Accept-Encoding': 'NotExistent'})
         self.printResult(r, set([415]))
         console.print('Body Length: ', len(r.text))
 
@@ -155,7 +157,7 @@ class UnitTest:
 
     def TESTdelete(self):
         r = requests.delete(self.url + 'deleteme.txt')
-        self.printResult(r, set([200, 204]))
+        self.printResult(r, set([200, 204,404]))
 
     def TestPost(self):
         console.print('[red]Testing form data')
@@ -175,15 +177,31 @@ class UnitTest:
         path = str(pathlib.Path().absolute()) + '/../test.py'
         file = open(path, 'rb')
         r = requests.put(self.url + 'test.py', files={'test.py': file})
-        self.printResult(r, set([200, 201, 204]))
+        self.printResult(r, set([200, 201, 204, 403]))
+    
+    def TestError(self):
+        file = open('request.txt','r')
+        req = file.read()   
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect(('localhost',int(sys.argv[1])))
+        s.send(req.encode('utf-8'))
+        res = s.recv(1024).decode('utf-8').split('\n')[0]
+        console.print(f'[blue]{res}')
 
+    def Test(self):
+        threadArray = []
+        n = 10
+        while (n):
+            client_thread = threading.Thread(target=self.TestMultipleMethods)
+            client_thread.start()
+            threadArray.append(client_thread)
+            n = n - 1
+        for i in threadArray:
+            i.join()
 
 if __name__ == "__main__":
     Tester = UnitTest()
     console = Console()
-    # if options == []:
-    #     Tester.TestGET()
-    #     Tester.TestHEAD()
     for i in options:
         if (i == '-g'):
             console.print('[cyan]Testing GET method')
@@ -209,6 +227,11 @@ if __name__ == "__main__":
         if (i == '-pt'):
             console.print('[cyan]Testing Put Method')
             Tester.TestPut()
-        # if(i == '-gocrazy'):
-        #     console.print('[red]Do a random test to crash this server :) ')
-        #     Tester.TestMega()
+        if (i == '-e'):
+            console.print('[cyan]Testing a malformed request')
+            Tester.TestError()
+        if(i == '--gocrazy'):
+            console.print('[red]Do a random test to crash this server :) ')
+            Tester.Test()
+        else:
+            console.print('[red]Invalid option')

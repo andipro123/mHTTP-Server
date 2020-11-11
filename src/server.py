@@ -135,6 +135,7 @@ if __name__ == "__main__":
             threadArray.append(t)
             if threading.active_count() > MAX_CONNECTIONS:
                 t.join()
+                print('Connection Limit exceeded. Retrying in 5 seconds')
                 time.sleep(5)
 
         for i in threadArray:
