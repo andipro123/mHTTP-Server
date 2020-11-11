@@ -18,10 +18,12 @@ from methods.head import parse_HEAD_Request
 from methods.delete import parse_DELETE_Request
 from methods.post import parse_POST_Request
 from methods.put import parse_PUT_Request
-from config.config import DOCUMENT_ROOT, MAX_CONNECTIONS, PORT
+from config.config import DOCUMENT_ROOT, MAX_CONNECTIONS, PORT, WATCHED_FILES
 documentRoot = DOCUMENT_ROOT
 method = ""
 logger = Logger()
+
+WATCHED_FILES_MTIMES = [(f, os.path.getmtime(f)) for f in WATCHED_FILES]
 
 
 def process(data, client_addr, raw=None):
@@ -47,7 +49,7 @@ def process(data, client_addr, raw=None):
             return generateResponse(0, 501)
     except Exception as e:
         print(e)
-        logger.generateError(headers[0],400)
+        logger.generateError(headers[0], 400)
         return generateResponse(0, 400)
 
 
@@ -71,8 +73,6 @@ def accept_client(clientsocket, client_addr):
         try:
             data_raw = clientsocket.recv(10485760)
             # print(data_raw)
-            # print('raw', len(data_raw))
-
             if (not data_raw):
                 break
             data = data_raw.decode('ISO-8859-1')
@@ -99,6 +99,11 @@ def accept_client(clientsocket, client_addr):
             if (conntype == "close"):
                 clientsocket.close()
                 break
+
+            for f, mtime in WATCHED_FILES_MTIMES:
+                if os.path.getmtime(f) != mtime:
+                    os.execv('./start.sh', sys.argv)
+
         except socket.timeout:
             clientsocket.close()
             break
@@ -119,6 +124,7 @@ if __name__ == "__main__":
         threadArray = []
         print("Listening on port {}".format(PORT))
         while 1:
+
             clientsocket, client_addr = s.accept()
             t = threading.Thread(target=accept_client,
                                  args=(

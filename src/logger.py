@@ -3,7 +3,6 @@
 # Format of the log files:
 # [time] req rescode length
 from config.config import ACCESS_LOG, ERROR_LOG, POST_LOG
-from config.config import LOG_FILE
 from config.config import LOG_FORMAT
 from config.config import LOG_LEVEL
 import threading

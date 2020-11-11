@@ -23,7 +23,7 @@ def parse_POST_Request(headers, cli, raw=None):
     logger.client_addr = cli
     resource_len = len(raw)
     params, body = Parser.parse_headers(headers, 'POST')
-    print(headers)
+    # print(headers)
     path = headers[0].split(' ')[1]
     if (path == "/"):
         path = documentRoot
@@ -42,19 +42,29 @@ def parse_POST_Request(headers, cli, raw=None):
     #     res = generateResponse(0, 403)
     #     logger.generateError(headers[0], res)
     #     return res
-
+    print(params['Content-Length'])
     # Handle application/x-www-form-urlencoded type of data
-    content_type = params['Content-Type']
+    if int(params['Content-Length']) != 0:
 
-    form_data = Parser.parse_body(content_type, body, 'POST', headers)
+        content_type = params.get('Content-Type', None)
+        form_data = Parser.parse_body(content_type, body, 'POST', headers)
 
-    if ('isFile' in form_data.keys() and form_data['isFile']):
+        if ('isFile' in form_data.keys() and form_data['isFile']):
 
-        header_length = form_data['header_length']
-        form_data['filedata'] = str(raw[:-46][header_length + 1:])
+            header_length = form_data['header_length']
+            form_data['filedata'] = str(raw[:-46][header_length + 1:])
 
-    res = generateResponse(len(body[0]), response_code, body[0], None)
-    logger.generate(headers[0], res)
-    logger.generatePOST(form_data, headers[0], params, response_code)
-    print(res)
-    return (res, "")
+        res = generateResponse(len(body[0]), response_code, body[0], None)
+        logger.generate(headers[0], res)
+        logger.generatePOST(form_data, headers[0], params, response_code)
+        # print(res)
+        return (res, "")
+
+    else:
+
+        form_data = Parser.parse_url_params(headers[0])
+        res = generateResponse(len(body[0]), response_code, body[0], None)
+        logger.generate(headers[0], res)
+        logger.generatePOST(form_data, headers[0], params, response_code)
+        # print(res)
+        return (res, "")
