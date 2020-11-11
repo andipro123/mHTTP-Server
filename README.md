@@ -37,6 +37,7 @@ This project is aimed at the implementation of the HTTP/1.1 Protocol based on RF
 1. Python 3.x
 
 For installing necessary dependencies before running the project run the following command:
+
 ```
 pip3 install -r requirements.txt
 ```
@@ -144,6 +145,7 @@ Keeps track of all the requests served successfully by the server alongwith the 
 ```
 CLIENT_IP [DATETIME] REQUEST RESPONSE  LENGTH
 ```
+
 The log format can be changed from the config file to match a desired format.
 
 <b>Error Logs</b>
@@ -155,6 +157,7 @@ CLIENT_IP [DATETIME] REQUEST RESPONSE LENGTH | CLIENT_IP ERROR_NO ERROR_MSG
 
 Error logs also include levels of logging.
 The following parameters can be used in the config file to record the desired error logs from the server.
+
 ```
 1. -c = Records all critical server crashes and errors within the server.
 2. -r = Records all error requests that were recieved to the server. Includes the 4xx and 5xx series responses
@@ -162,7 +165,6 @@ The following parameters can be used in the config file to record the desired er
 ```
 
 A log compressor script is also included with the log files that can be run to compress and store the log files into a different directory. The script can be cron scheduled to save disk space once the log file size exceeds a certain limit.
-
 
 ## 🚀 Deployment <a name = "deployment"></a>
 
