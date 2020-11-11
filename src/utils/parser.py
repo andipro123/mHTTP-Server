@@ -90,21 +90,14 @@ class Parser:
 
             return form_data
 
-        # elif type == 'PUT':
-        # form_data = {}
-        # boundary = enctype[enctype.find("=") + 1:]
-        # key = ''
-        # value = ''
-        # form_data['isFile'] = False
+    def parse_url_params(header):
 
-        # for line in body[1:]:
-        #     print(line)
+        form_data = {}
 
-        #     if 'Content-Type' in line:
-        #         form_data['isFile'] = True
-        #         x = data.index(line)
-        #         header_string = "\n".join(data[:x + 2])
-        #         print(header_string)
-        #         form_data['header_length'] = len(header_string)
-        # # print(form_data)
-        # return form_data
+        url = header.split(' ')[1]
+        string = url[2:].split('&')
+        for param in string:
+            param = param.split('=')
+            form_data[param[0]] = param[1]
+
+        return form_data

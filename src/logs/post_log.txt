@@ -466,6 +466,10 @@
 {
     "foo": "bar"
 }
+127.0.0.1 [Wed, 11 Nov 2020 20:38:59 IST]  "POST /?name=aniket&surname=jayateerth HTTP/1.1" 201 0 {
+    "name": "aniket",
+    "surname": "jayateerth"
+}
 127.0.0.1 [Tue, 10 Nov 2020 17:34:54 IST]  "POST / HTTP/1.1" 204 28 {
     "name": "UnitTest1.0",
     "tester": "dev1"

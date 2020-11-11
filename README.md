@@ -37,6 +37,7 @@ This project is aimed at the implementation of the HTTP/1.1 Protocol based on RF
 1. Python 3.x
 
 For installing necessary dependencies before running the project run the following command:
+
 ```
 pip3 install -r requirements.txt
 ```
@@ -62,6 +63,7 @@ This will start the server on a default port of as mentioned in the configuratio
 7. POST_LOG = Specify the file to save post logs
 8. LOG_FORMAT = Specify the format to write access logs from the server
 9. LOG_LEVEL = Specify the levels for error logs from the server
+10. WATCHED_FILES = Specify files to watch for hot reload
 ```
 
 Once the server starts, it will start a background process that serves connections from clients.
@@ -137,10 +139,11 @@ Tries to send 100 parallel requests to the server listening on port 5000
 
 ## ✍️ Logs <a name="log"></a>
 
-The logs to the server requests as well as internal server state can be viewed in the `src/logs` directory. There are two types of logs maintained by the server:
+The logs to the server requests as well as internal server state can be viewed in the `src/logs` directory. There are three types of logs maintained by the server:
 
 1. Access Logs
 2. Error Logs
+3. POST Request Logs
 
 <b>Access Logs</b>
 Keeps track of all the requests served successfully by the server alongwith the response code. The default format of the access logs:
@@ -148,6 +151,7 @@ Keeps track of all the requests served successfully by the server alongwith the 
 ```
 CLIENT_IP [DATETIME] REQUEST RESPONSE  LENGTH
 ```
+
 The log format can be changed from the config file to match a desired format.
 
 <b>Error Logs</b>
@@ -159,14 +163,23 @@ CLIENT_IP [DATETIME] REQUEST RESPONSE LENGTH | CLIENT_IP ERROR_NO ERROR_MSG
 
 Error logs also include levels of logging.
 The following parameters can be used in the config file to record the desired error logs from the server.
+
 ```
 1. -c = Records all critical server crashes and errors within the server.
 2. -r = Records all error requests that were recieved to the server. Includes the 4xx and 5xx series responses
 3. -all = Records all the erros inclusive of server state and error requests.
 ```
 
-A log compressor script is also included with the log files that can be run to compress and store the log files into a different directory. The script can be cron scheduled to save disk space once the log file size exceeds a certain limit.
+<b>POST Logs</b>
+Keeps track of all the POST requests served successfully by the server alongwith the response code. The default format of the access logs:
 
+```
+CLIENT_IP [DATETIME] REQUEST RESPONSE LENGTH {FORM_DATA in json format}
+```
+
+The log format can be changed from the config file to match a desired format.
+
+A log compressor script is also included with the log files that can be run to compress and store the log files into a different directory. The script can be cron scheduled to save disk space once the log file size exceeds a certain limit.
 
 ## 🚀 Deployment <a name = "deployment"></a>
 
