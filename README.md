@@ -170,7 +170,7 @@ The following parameters can be used in the config file to record the desired er
 3. -all = Records all the erros inclusive of server state and error requests.
 ```
 
-<b>Access Logs</b>
+<b>POST Logs</b>
 Keeps track of all the POST requests served successfully by the server alongwith the response code. The default format of the access logs:
 
 ```
