@@ -23,7 +23,6 @@
 - [Usage](#usage)
 - [Running Tests](#tests)
 - [Logging](#log)
-- [Deployment](#deployment)
 - [Built Using](#built_using)
 - [Authors](#authors)
 - [Acknowledgments](#acknowledgement)
@@ -105,7 +104,7 @@ The options specifications for the test module:
 6. -cg Test the Conditional GET method
 7. -m Test a combination of the 5 methods
 8. -e Test with a malformed request
-8. --go-crazy Simulate a parallel combination of multiple methods
+8. --gocrazy Simulate a parallel combination of multiple methods
 ```
 
 #### To run tests for cookies:
@@ -167,7 +166,7 @@ The following parameters can be used in the config file to record the desired er
 ```
 1. -c = Records all critical server crashes and errors within the server.
 2. -r = Records all error requests that were recieved to the server. Includes the 4xx and 5xx series responses
-3. -all = Records all the erros inclusive of server state and error requests.
+3. -all = Records all the errors inclusive of server state and error requests.
 ```
 
 <b>POST Logs</b>
@@ -180,10 +179,6 @@ CLIENT_IP [DATETIME] REQUEST RESPONSE LENGTH {FORM_DATA in json format}
 The log format can be changed from the config file to match a desired format.
 
 A log compressor script is also included with the log files that can be run to compress and store the log files into a different directory. The script can be cron scheduled to save disk space once the log file size exceeds a certain limit.
-
-## 🚀 Deployment <a name = "deployment"></a>
-
-The server is running live on AWS. The link to the server is <a>to be added</a>
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 

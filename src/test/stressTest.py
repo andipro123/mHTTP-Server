@@ -66,4 +66,4 @@ if __name__ == "__main__":
     for i in threadArray:
         i.join()
     
-    print(f'Successful Requests:{success}\nFailed Requests: {failure}')
+    # print(f'Successful Requests:{success}\nFailed Requests: {failure}')
