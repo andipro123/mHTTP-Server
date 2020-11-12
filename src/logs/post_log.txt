@@ -1037,3 +1037,39 @@
 127.0.0.1 [Wed, 11 Nov 2020 22:15:26 IST]  "POST / HTTP/1.1" 204 7 {
     "foo": "bar"
 }
+127.0.0.1 [Wed, 11 Nov 2020 22:53:30 IST]  "POST / HTTP/1.1" 204 37 {
+    "name": "aniket",
+    "surname": "jayateerth",
+    "age": "31"
+}
+127.0.0.1 [Wed, 11 Nov 2020 22:53:30 IST]  "POST / HTTP/1.1" 204 418 {
+    "isFile": true,
+    "header_length": 622,
+    "filename": "test.py",
+    "filedata": "b''"
+}
+127.0.0.1 [Wed, 11 Nov 2020 22:57:26 IST]  "POST / HTTP/1.1" 204 37 {
+    "name": "aniket",
+    "surname": "jayateerth",
+    "age": "31"
+}
+127.0.0.1 [Wed, 11 Nov 2020 22:57:31 IST]  "POST / HTTP/1.1" 204 37 {
+    "name": "aniket",
+    "surname": "jayateerth",
+    "age": "31"
+}
+127.0.0.1 [Wed, 11 Nov 2020 22:57:31 IST]  "POST / HTTP/1.1" 204 418 {
+    "isFile": true,
+    "header_length": 622,
+    "filename": "test.py",
+    "filedata": "b''"
+}
+127.0.0.1 [Thu, 12 Nov 2020 11:17:26 IST]  "POST / HTTP/1.1" 204 1557 {
+    "isFile": true,
+    "name": "abc",
+    "surname": "bye",
+    "header_length": 1067,
+    "filename": "random.txt",
+    "filename\"; filename=\"random.txt": "",
+    "filedata": "b'Hello. This is aniket and the topic for case study is Privacy.\\r\\nBroadly speaking privacy is the right to be let alone. That is to say, that as an individual you have\\r\\na right to seclude yourself from the public notice. More specifically, information privacy relates to \\r\\nhaving control over how your private information is being used by others.\\r\\n\\r\\nShould right to privacy be a fundamental right?\\r\\nBefore that there are 2 tradeoffs we need to know.\\r\\n1. Security vs privacy tradeoff - govts\\r\\n2. Personalised services vs privacy tradeoff - facebook, etc.\\r\\n\\r\\nThe key to declaring this as a fundamental right, lies in the fact how privacy is interconnected with other important rights.\\r\\nThe right to personal autonomy, the right to make choices without everyone knowing about them, etc. are so intertwined that\\r\\nright to privacy is slowly being accepted as a fundamental right. \\r\\n\\r\\nIn india, the right to privacy was recognized as a fundamental right in 2017. 2 major cases which shaped these were,\\r\\na) Constituional validity of adhar scheme. Where justice KS Puttaswamy questioned the right to privacy.\\r\\nAlthough it was overruled citing examples of previous cases of 1954 and 1964. '"
+}

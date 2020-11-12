@@ -8,7 +8,7 @@ DOCUMENT_ROOT = abs_path + '/assets/'
 TIMEOUT = 500
 
 #Default port number
-PORT = 5003
+PORT = 5002
 
 #Maximum number of conncetions supported simulataneously
 MAX_CONNECTIONS = 30

@@ -5,6 +5,7 @@ sys.path.append(os.path.abspath(os.path.join('config')))
 from response import *
 from logger import Logger
 import pathlib
+from utils.mediaTypes import *
 from utils.parser import *
 from config.config import DOCUMENT_ROOT
 
@@ -42,7 +43,7 @@ def parse_POST_Request(headers, cli, raw=None):
     #     res = generateResponse(0, 403)
     #     logger.generateError(headers[0], res)
     #     return res
-    print(params['Content-Length'])
+    # print(params['Content-Length'])
     # Handle application/x-www-form-urlencoded type of data
     if int(params['Content-Length']) != 0:
 
@@ -51,13 +52,20 @@ def parse_POST_Request(headers, cli, raw=None):
 
         if ('isFile' in form_data.keys() and form_data['isFile']):
 
-            header_length = form_data['header_length']
-            form_data['filedata'] = str(raw[:-46][header_length + 1:])
+            if form_data['file_type'] in mediaTypes.keys():
+                header_length = form_data['header_length']
+                form_data['filedata'] = str(raw[:-46][header_length + 1:])
+            else:
+                res = generateResponse(len(body[0]), 415, body[0], None)
+                logger.generate(headers[0], res)
+                logger.generateError(headers[0], res)
+                print(res)
+                return (res, "")
 
         res = generateResponse(len(body[0]), response_code, body[0], None)
         logger.generate(headers[0], res)
         logger.generatePOST(form_data, headers[0], params, response_code)
-        # print(res)
+        print(res)
         return (res, "")
 
     else:
@@ -66,5 +74,5 @@ def parse_POST_Request(headers, cli, raw=None):
         res = generateResponse(len(body[0]), response_code, body[0], None)
         logger.generate(headers[0], res)
         logger.generatePOST(form_data, headers[0], params, response_code)
-        # print(res)
+        print(res)
         return (res, "")

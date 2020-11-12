@@ -102,6 +102,7 @@ def accept_client(clientsocket, client_addr):
 
             for f, mtime in WATCHED_FILES_MTIMES:
                 if os.path.getmtime(f) != mtime:
+                    print('Restarting server...')
                     os.execv('./start.sh', sys.argv)
 
         except socket.timeout:
