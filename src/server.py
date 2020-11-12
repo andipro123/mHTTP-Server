@@ -100,9 +100,13 @@ def accept_client(clientsocket, client_addr):
                 clientsocket.close()
                 break
 
-            for f, mtime in WATCHED_FILES_MTIMES:
-                if os.path.getmtime(f) != mtime:
-                    os.execv('./start.sh', sys.argv)
+            try:
+                for f, mtime in WATCHED_FILES_MTIMES:
+                    if os.path.getmtime(f) != mtime:
+                        os.execv('./start.sh', sys.argv)
+            except Exception as e:
+                print(e)
+                pass
 
         except socket.timeout:
             clientsocket.close()
