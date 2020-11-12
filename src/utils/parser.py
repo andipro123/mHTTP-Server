@@ -80,6 +80,8 @@ class Parser:
                         value = body[body.index(line) + 2][:-1]
 
                     elif 'Content-Type' in line or 'filename' in line:
+                        file_type = line[line.index(':') + 1:]
+                        form_data['file_type'] = file_type
                         form_data['isFile'] = True
                         x = data.index(line)
                         header_string = "\n".join(data[:x + 2])

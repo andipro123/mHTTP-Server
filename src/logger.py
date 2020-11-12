@@ -99,7 +99,7 @@ class Logger():
     def generateError(self, req, res):
         if (LOG_LEVEL == "-c"):
             return
-        file = open('./logs/error_log.txt', "a")
+        file = open(errorLog, "a")
         try:
             res = res.split('\n')
             params = {}
@@ -129,11 +129,12 @@ class Logger():
                 elif (i == 'LENGTH'):
                     log += "{} ".format(params['Content-Length'])
             if (log == ''):
-                log = "{} [{}] \"{}\" {} {}\n".format(self.client_addr[0], datestr,
-                                                    req[:len(req) - 1], code,
-                                                    params['Content-Length'])
+                log = "{} [{}] \"{}\" {} {}\n".format(self.client_addr[0],
+                                                      datestr,
+                                                      req[:len(req) - 1], code,
+                                                      params['Content-Length'])
 
-        except :
+        except:
             log = f'Bad Request [{res}]'
         self.lock.acquire()
         file.write(log + '\n')
