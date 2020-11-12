@@ -18,12 +18,12 @@ from methods.head import parse_HEAD_Request
 from methods.delete import parse_DELETE_Request
 from methods.post import parse_POST_Request
 from methods.put import parse_PUT_Request
-from config.config import DOCUMENT_ROOT, MAX_CONNECTIONS, PORT, WATCHED_FILES
+from config.config import DOCUMENT_ROOT, MAX_CONNECTIONS, PORT
 documentRoot = DOCUMENT_ROOT
 method = ""
 logger = Logger()
 
-WATCHED_FILES_MTIMES = [(f, os.path.getmtime(f)) for f in WATCHED_FILES]
+# WATCHED_FILES_MTIMES = [(f, os.path.getmtime(f)) for f in WATCHED_FILES]
 
 
 def process(data, client_addr, raw=None):
@@ -100,13 +100,13 @@ def accept_client(clientsocket, client_addr):
                 clientsocket.close()
                 break
 
-            try:
-                for f, mtime in WATCHED_FILES_MTIMES:
-                    if os.path.getmtime(f) != mtime:
-                        os.execv('./start.sh', sys.argv)
-            except Exception as e:
-                print(e)
-                pass
+            # try:
+            #     for f, mtime in WATCHED_FILES_MTIMES:
+            #         if os.path.getmtime(f) != mtime:
+            #             os.execv('./start.sh', sys.argv)
+            # except Exception as e:
+            #     print(e)
+            #     pass
 
         except socket.timeout:
             clientsocket.close()

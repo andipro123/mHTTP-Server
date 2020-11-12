@@ -63,7 +63,6 @@ This will start the server on a default port of as mentioned in the configuratio
 7. POST_LOG = Specify the file to save post logs
 8. LOG_FORMAT = Specify the format to write access logs from the server
 9. LOG_LEVEL = Specify the levels for error logs from the server
-10. WATCHED_FILES = Specify files to watch for hot reload
 ```
 
 Once the server starts, it will start a background process that serves connections from clients.
@@ -106,7 +105,7 @@ The options specifications for the test module:
 6. -cg Test the Conditional GET method
 7. -m Test a combination of the 5 methods
 8. -e Test with a malformed request
-8. -go-crazy Simulate a parallel combination of multiple methods
+8. --go-crazy Simulate a parallel combination of multiple methods
 ```
 
 #### To run tests for cookies:
@@ -114,6 +113,7 @@ The options specifications for the test module:
 1. Run an instance of the server
 2. Go to a browser and type the url <a>http://localhost:[PORT]/login.html</a>
 3. The page will simulate a login state management using cookies that expires every 15 seconds.
+   <br></br>
    <b>Expected behaviour: </b> Shows the <i>logged out refresh again </i>screen by default. Upon refreshing a new cookie is obtained from the server and is cached locally. For every subsequent request the cookies are sent from the client. Upon expiration the <i>logged out refresh again</i> page will reappear.
 
 Alternately you can also run a python script in the `src/test/` directory to send a request and observe the recieved cookie

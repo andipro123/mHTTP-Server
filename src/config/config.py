@@ -11,7 +11,7 @@ TIMEOUT = 500
 PORT = 4000
 
 #Maximum number of conncetions supported simulataneously
-MAX_CONNECTIONS = 300
+MAX_CONNECTIONS = 30
 
 #Access Log File directory
 ACCESS_LOG = abs_path + '/logs/access_log.txt'
@@ -37,9 +37,9 @@ LOG_FORMAT = "CLIENT_IP [DATETIME] REQUEST RESPONSE LENGTH"
 LOG_LEVEL = "-all"
 
 #List of files to be watched for changes
-WATCHED_FILES = [
-    abs_path + '/server.py', abs_path + '/methods/post.py',
-    abs_path + '/methods/get.py', abs_path + '/methods/put.py',
-    abs_path + '/methods/delete.py', abs_path + '/methods/head.py',
-    abs_path + '/config/config.py'
-]
+# WATCHED_FILES = [
+#     abs_path + '/server.py', abs_path + '/methods/post.py',
+#     abs_path + '/methods/get.py', abs_path + '/methods/put.py',
+#     abs_path + '/methods/delete.py', abs_path + '/methods/head.py',
+#     abs_path + '/config/config.py'
+# ]
