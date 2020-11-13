@@ -1,5 +1,5 @@
-<p align="center">
- <img width=200px height=200px src="https://i.imgur.com/6wj0hh6.jpg" alt="Project logo"></a>
+﻿<p align="center">
+ <img width=200px height=200px src="resources/logo.png" alt="Project logo"></a>
 </p>
 
 <h3 align="center">mHTTP Server</h3>
